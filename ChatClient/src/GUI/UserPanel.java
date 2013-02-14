@@ -17,10 +17,12 @@ public class UserPanel extends javax.swing.JPanel {
      */
     public UserPanel() {
         initComponents();
+        jLabel1.setText("dummyUser");
     }
 
     public UserPanel(User user) {
         initComponents();
+        jLabel1.setText(user.getName());
     }
 
     /**
