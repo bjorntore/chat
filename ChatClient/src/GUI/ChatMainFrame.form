@@ -189,7 +189,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="jPanel2.setLayout(new GridLayout());"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="jPanel2.setLayout(new GridBagLayout());"/>
               </AuxValues>
 
               <Layout>

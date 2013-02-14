@@ -6,7 +6,7 @@ package GUI;
 
 import Users.User;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
-import java.awt.GridLayout;
+import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -50,7 +50,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         IAppWidgetFactory.makeIAppScrollPane(jScrollPane2);
         jScrollPane2.getVerticalScrollBar().setUnitIncrement(13);
         jPanel2 = new javax.swing.JPanel();
-        jPanel2.setLayout(new GridLayout());
+        jPanel2.setLayout(new GridBagLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ChatClient");

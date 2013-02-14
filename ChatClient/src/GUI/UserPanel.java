@@ -24,6 +24,7 @@ public class UserPanel extends javax.swing.JPanel {
     public UserPanel(User user) {
         initComponents();
         jLabel1.setText(user.getName());
+        add(jLabel1);
         this.setSize(194, 34);        
         setVisible(true);
     }
