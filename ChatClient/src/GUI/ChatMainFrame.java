@@ -47,6 +47,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("ChatClient");
         setForeground(java.awt.Color.black);
         setMinimumSize(new java.awt.Dimension(400, 200));
 
