@@ -18,11 +18,14 @@ public class UserPanel extends javax.swing.JPanel {
     public UserPanel() {
         initComponents();
         jLabel1.setText("dummyUser");
+        setVisible(true);
     }
 
     public UserPanel(User user) {
         initComponents();
         jLabel1.setText(user.getName());
+        this.setSize(194, 34);        
+        setVisible(true);
     }
 
     /**
@@ -37,7 +40,8 @@ public class UserPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(243, 243, 243));
-        setPreferredSize(new java.awt.Dimension(50, 42));
+        setMinimumSize(new java.awt.Dimension(50, 20));
+        setPreferredSize(new java.awt.Dimension(192, 42));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 

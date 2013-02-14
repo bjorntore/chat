@@ -6,6 +6,7 @@ package GUI;
 
 import Users.User;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -22,13 +23,13 @@ public class ChatMainFrame extends javax.swing.JFrame {
         initComponents();
     }
 
-    public void refreshUserList(ArrayList<User> RefreshedListOfUsers){
+    public void refreshUserList(ArrayList<User> RefreshedListOfUsers) {
         jPanel2.removeAll();
         for (User user : RefreshedListOfUsers) {
             jPanel2.add(new UserPanel(user));
         }
-    }    
-    
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -49,6 +50,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         IAppWidgetFactory.makeIAppScrollPane(jScrollPane2);
         jScrollPane2.getVerticalScrollBar().setUnitIncrement(13);
         jPanel2 = new javax.swing.JPanel();
+        jPanel2.setLayout(new GridLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ChatClient");
@@ -176,41 +178,6 @@ public class ChatMainFrame extends javax.swing.JFrame {
             jTextField1.setText("");
         }
     }//GEN-LAST:event_jTextField1KeyPressed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ChatMainFrame().setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
