@@ -4,6 +4,8 @@
  */
 package GUI;
 
+import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
 /**
@@ -30,10 +32,14 @@ public class ChatMainFrame extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
+        IAppWidgetFactory.makeIAppScrollPane(jScrollPane1);
+        jScrollPane1.getVerticalScrollBar().setUnitIncrement(13);
         jTextArea1 = new javax.swing.JTextArea();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
+        IAppWidgetFactory.makeIAppScrollPane(jScrollPane2);
+        jScrollPane2.getVerticalScrollBar().setUnitIncrement(13);
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -45,7 +51,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(400, 200));
 
         jPanel1.setBackground(new java.awt.Color(252, 252, 252));
-        jPanel1.setMinimumSize(new java.awt.Dimension(400, 150));
+        jPanel1.setMinimumSize(new java.awt.Dimension(390, 160));
 
         jScrollPane1.setBorder(null);
 
@@ -63,6 +69,11 @@ public class ChatMainFrame extends javax.swing.JFrame {
         jTextField1.setNextFocusableComponent(jButton1);
         jTextField1.setPreferredSize(new java.awt.Dimension(59, 16));
         jTextField1.setSelectionColor(new java.awt.Color(204, 204, 204));
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
 
         jButton1.setText("Send");
         jButton1.setFocusable(false);
@@ -118,7 +129,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
-                .addContainerGap(121, Short.MAX_VALUE))
+                .addContainerGap(119, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -168,7 +179,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
                 .addGap(11, 11, 11)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -191,14 +202,24 @@ public class ChatMainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseReleased
-        if(jTextArea1.getText().equals("")){
-        jTextArea1.setText("  " + jTextField1.getText());
-        }
-        else{
-        jTextArea1.setText(jTextArea1.getText() + "\n  " + jTextField1.getText());
+        if (jTextArea1.getText().equals("")) {
+            jTextArea1.setText("  " + jTextField1.getText());
+        } else {
+            jTextArea1.setText(jTextArea1.getText() + "\n  " + jTextField1.getText());
         }
         jTextField1.setText("");
     }//GEN-LAST:event_jButton1MouseReleased
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (jTextArea1.getText().equals("")) {
+                jTextArea1.setText("  " + jTextField1.getText());
+            } else {
+                jTextArea1.setText(jTextArea1.getText() + "\n  " + jTextField1.getText());
+            }
+            jTextField1.setText("");
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
 
     /**
      * @param args the command line arguments
