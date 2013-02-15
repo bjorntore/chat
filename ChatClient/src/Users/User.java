@@ -11,6 +11,11 @@ public class User {
     public User(String name){
     this.name = name;
     }
+    
+    public User(String name, String signature){
+    this.name = name;
+    this.signature = signature;
+    }
 
     public String getName() {
         return name;

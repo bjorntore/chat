@@ -77,7 +77,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField1.setBorder(null);
+        jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(233, 231, 231)));
         jTextField1.setNextFocusableComponent(jButton1);
         jTextField1.setPreferredSize(new java.awt.Dimension(59, 16));
         jTextField1.setSelectionColor(new java.awt.Color(204, 204, 204));
@@ -102,6 +102,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         jScrollPane2.setAutoscrolls(true);
         jScrollPane2.setHorizontalScrollBar(null);
         jScrollPane2.setMinimumSize(new java.awt.Dimension(50, 22));
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(196, 439));
 
         jPanel2.setBackground(new java.awt.Color(244, 244, 244));
         jPanel2.setAutoscrolls(true);
@@ -112,7 +113,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 192, Short.MAX_VALUE)
+            .addGap(0, 196, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -40,10 +40,10 @@ public class ChatClient {
         }
         //</editor-fold>
 
-        User stian = new User("Stian");
-        User bt = new User("Bjørn Tore");
-        User iver = new User("Iver");
-        User rasmus = new User("Rasmus");
+        User stian = new User("Stian", "I like cats");
+        User bt = new User("Bjørn Tore", "I LIKE cats");
+        User iver = new User("Iver" , "I fucking LOVE tractors!");
+        User rasmus = new User("Rasmus", "Do you even lift?");
 
         ArrayList<User> users = new ArrayList<>();
         users.add(stian);

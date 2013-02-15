@@ -6,6 +6,15 @@ package GUI;
 
 import Users.User;
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.event.MouseInputListener;
 
 /**
  *
@@ -16,11 +25,20 @@ public class UserPanel extends javax.swing.JPanel {
     /**
      * Creates new form UserPanel
      */
+    private boolean contactOptionsVisible = false;
+    private User user;
+    private JPanel test2 = new JPanel();
+    private JPanel test = new JPanel();
+
     public UserPanel(User user) {
+        this.user = user;
         initComponents();
         jLabel1.setText(user.getName());
-        setVisible(true);
+        initContactOptionPanels();
 
+        add(test);
+        add(test2);
+        setVisible(true);
     }
 
     /**
@@ -32,12 +50,20 @@ public class UserPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
+        jLabel2.setText("jLabel2");
+
         setBackground(new java.awt.Color(221, 221, 221));
-        setMaximumSize(new java.awt.Dimension(194, 40));
-        setMinimumSize(new java.awt.Dimension(194, 40));
+        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(212, 212, 212)));
+        setMaximumSize(new java.awt.Dimension(192, 40));
+        setMinimumSize(new java.awt.Dimension(192, 40));
+        setPreferredSize(new java.awt.Dimension(196, 40));
         addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 formMouseEntered(evt);
             }
@@ -59,9 +85,8 @@ public class UserPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -73,15 +98,60 @@ public class UserPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
-        //setBackground(new Color(253, 253, 253, 253));
         jLabel1.setForeground(Color.WHITE);
     }//GEN-LAST:event_formMouseEntered
 
     private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
-      //  setBackground(new Color(200, 200, 200, 200));
-        jLabel1.setForeground(new Color(68,68,68,255));
+        jLabel1.setForeground(new Color(68, 68, 68, 255));
+
+        if (contactOptionsVisible) {
+            //contactOptions.setOpaque(false);
+            setSize(getWidth(), (getHeight() - 3) / 3);
+            contactOptionsVisible = false;
+        }
     }//GEN-LAST:event_formMouseExited
+
+    private void initContactOptionPanels() {
+
+        test.setBounds(3, 44, 186, 41);
+        test.setBackground(new Color(248,248,248,255));
+        test.setLayout(null);
+        JLabel test1Label =  new JLabel("New Message");
+        test1Label.setBounds(12,11,186,22);
+        test1Label.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        test.add(test1Label);
+        test.setBorder(BorderFactory.createLineBorder(new Color(230,230,230,255)));
+
+        test2.setBounds(3, 88, 186, 41);
+        test2.setBackground(new Color(248,248,248,255));
+        test2.setLayout(null);
+        JLabel test2Label =  new JLabel("Send File");
+        test2Label.setBounds(12,11,186,22);        
+        test2Label.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        test2.add(test2Label);
+        test2.setBorder(BorderFactory.createLineBorder(new Color(230,230,230,255)));
+    }
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        if (getComponentAt(evt.getPoint()).equals(test)) {
+            JOptionPane.showMessageDialog(this, "Sending message to " + user.getName());
+        } else if (getComponentAt(evt.getPoint()).equals(test2)) {
+            JOptionPane.showMessageDialog(this, "Sending file to " + user.getName());
+        } else {
+            if (!contactOptionsVisible) {
+                setSize(getWidth(), (getHeight() * 3) + 3);
+                //contactOptions.setOpaque(true);
+                contactOptionsVisible = true;
+            } else {
+                // contactOptions.setOpaque(false);
+                setSize(getWidth(), (getHeight() - 3) / 3);
+                contactOptionsVisible = false;
+            }
+        }
+
+    }//GEN-LAST:event_formMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
