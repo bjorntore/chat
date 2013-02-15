@@ -6,15 +6,11 @@ package GUI;
 
 import Users.User;
 import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.Cursor;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.event.MouseInputListener;
 
 /**
  *
@@ -41,6 +37,9 @@ public class UserPanel extends javax.swing.JPanel {
         setVisible(true);
     }
 
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -106,7 +105,7 @@ public class UserPanel extends javax.swing.JPanel {
 
         if (contactOptionsVisible) {
             //contactOptions.setOpaque(false);
-            setSize(getWidth(), (getHeight() - 3) / 3);
+            setSize(194, 44);
             contactOptionsVisible = false;
         }
     }//GEN-LAST:event_formMouseExited
@@ -114,22 +113,24 @@ public class UserPanel extends javax.swing.JPanel {
     private void initContactOptionPanels() {
 
         test.setBounds(3, 44, 186, 41);
-        test.setBackground(new Color(248,248,248,255));
+        test.setBackground(new Color(248, 248, 248, 255));
         test.setLayout(null);
-        JLabel test1Label =  new JLabel("New Message");
-        test1Label.setBounds(12,11,186,22);
+        JLabel test1Label = new JLabel("New Message");
+        test1Label.setBounds(12, 11, 186, 22);
         test1Label.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        test.setCursor(new Cursor(Cursor.HAND_CURSOR));
         test.add(test1Label);
-        test.setBorder(BorderFactory.createLineBorder(new Color(230,230,230,255)));
+        test.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230, 255)));
 
         test2.setBounds(3, 88, 186, 41);
-        test2.setBackground(new Color(248,248,248,255));
+        test2.setBackground(new Color(248, 248, 248, 255));
         test2.setLayout(null);
-        JLabel test2Label =  new JLabel("Send File");
-        test2Label.setBounds(12,11,186,22);        
+        JLabel test2Label = new JLabel("Send File");
+        test2Label.setBounds(12, 11, 186, 22);
         test2Label.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        test2.setCursor(new Cursor(Cursor.HAND_CURSOR));
         test2.add(test2Label);
-        test2.setBorder(BorderFactory.createLineBorder(new Color(230,230,230,255)));
+        test2.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230, 255)));
     }
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
@@ -137,16 +138,16 @@ public class UserPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Sending message to " + user.getName());
         } else if (getComponentAt(evt.getPoint()).equals(test2)) {
             JOptionPane.showMessageDialog(this, "Sending file to " + user.getName());
+        }
+        if (!contactOptionsVisible) {
+            setSize(194, 133);
+            //contactOptions.setOpaque(true);
+            contactOptionsVisible = true; 
         } else {
-            if (!contactOptionsVisible) {
-                setSize(getWidth(), (getHeight() * 3) + 3);
-                //contactOptions.setOpaque(true);
-                contactOptionsVisible = true;
-            } else {
-                // contactOptions.setOpaque(false);
-                setSize(getWidth(), (getHeight() - 3) / 3);
-                contactOptionsVisible = false;
-            }
+            // contactOptions.setOpaque(false);
+            setSize(194, 44);
+            contactOptionsVisible = false;
+
         }
 
     }//GEN-LAST:event_formMouseClicked
