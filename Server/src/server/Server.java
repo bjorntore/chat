@@ -1,8 +1,11 @@
 package server;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -16,7 +19,7 @@ public class Server extends JFrame {
 	//ArrayList<User> usersConnected= new ArrayList<User>();
 	ArrayList<Socket> listOfSockets= new ArrayList<Socket>();
 	ArrayList<Thread> listOfThreads= new ArrayList<Thread>(); 
-	ArrayList<DataOutputStream> listOfOutStreams= new ArrayList<DataOutputStream>();
+	ArrayList<ObjectOutputStream> listOfOutStreams= new ArrayList<ObjectOutputStream>();
 	ArrayList<DataInputStream> listOfInStreams= new ArrayList<DataInputStream>();
 
 	public Server(){
@@ -28,31 +31,35 @@ public class Server extends JFrame {
 			}
 			public void run() {
 				try{
-					DataInputStream DIS= new DataInputStream(clientSocket.getInputStream());
-					DataOutputStream DOS= new DataOutputStream(clientSocket.getOutputStream());
+					InputStream is = clientSocket.getInputStream();   
+					ObjectInputStream ois = new ObjectInputStream(is); 
+					OutputStream os= clientSocket.getOutputStream();
+					ObjectOutputStream oos=new ObjectOutputStream(os);
+					
 					while(true){
-						Message msg= new Message(DIS.readUTF());
-						msg.parseMessage();
+						Message	msg = (Message)ois.readObject(); 
 						
-						if(msg.signal.equalsIgnoreCase(Signal.JOIN.toString())){ //ser om det blir bedt om å joine en chat av socketen
-							for(int i=0;i<chatrooms.size();i++){
-								
-								if(chatrooms.get(i).name.equalsIgnoreCase(msg.chatroom)){ //joine chatroom
-									chatrooms.get(i).addUserToChatroom(DOS);
-								}
-							}
+						if(msg.signal.equalsIgnoreCase("CONNECT")){
+							listOfOutStreams.add(oos);
 						}
-						if(msg.signal.equalsIgnoreCase(Signal.SEND.toString())){      //sjekker om socketen sender en mld, 
-							chatrooms.get(findChatroom(msg.chatroom)).writeToChatroom(msg.from+": "+msg.message); //finner chatroomet som beskjeden skal til
+						if(msg.signal.equalsIgnoreCase("JOIN")){
+							findChatroom(msg.chatroom).addUserToChatroom(oos);
+						}
+						if(msg.signal.equalsIgnoreCase("SEND")){
+							findChatroom(msg.chatroom).writeToChatroom(msg);
 						}
 					}
-				}catch(IOException IOE){};
+				}catch(IOException IOE){} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				};
 				//TODO something
 			}
-			}
+		}
 		System.out.println("Server up and running");
 		show();										//midlertidig til vi har ordna skikkeli serverGUI
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 		try{
 			ServerSocket serverSocket= new ServerSocket(10823);
 
@@ -63,27 +70,21 @@ public class Server extends JFrame {
 					listOfThreads.get(listOfThreads.size()-1).start();
 				}
 			}
-		}
-		catch(IOException ex){System.err.println(ex);}
+		} catch(IOException ex){System.err.println(ex);}
 	}
-	
-	public int findChatroom(String name){
+
+	public Chatroom findChatroom(String name){
 		for(int i=0; i<chatrooms.size();i++){
-			if(chatrooms.get(i).name.equalsIgnoreCase(name))
-			return i;
+			if(chatrooms.get(i).name.equalsIgnoreCase(name)) return chatrooms.get(i);
 		}
-		return -1;
+		return null;
 	}
 
 
 	public static void main(String[] args) {
 		Server server=new Server();
-
-
-
-
 	}
-	public enum Signal{  //kom ikke på fler;P
+	public enum Signal{
 		JOIN,LEAVE, SEND, 
 	}
 }
