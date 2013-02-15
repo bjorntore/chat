@@ -5,16 +5,10 @@
 package GUI;
 
 import Users.User;
-import com.explodingpixels.macwidgets.IAppWidgetFactory;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
+//import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 
 /**
  *
@@ -31,11 +25,13 @@ public class ChatMainFrame extends javax.swing.JFrame {
 
     public void refreshUserList(ArrayList<User> RefreshedListOfUsers) {
         jPanel2.removeAll();
-        
+
         jPanel2.setLayout(new GridLayout(10, 1, 0, 2));
 
+        UserPanel userPanel;
         for (User user : RefreshedListOfUsers) {
-            jPanel2.add(new UserPanel(user));
+            userPanel = new UserPanel(user);
+            jPanel2.add(userPanel);
         }
     }
 
@@ -50,23 +46,22 @@ public class ChatMainFrame extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        IAppWidgetFactory.makeIAppScrollPane(jScrollPane1);
+        //IAppWidgetFactory.makeIAppScrollPane(jScrollPane1);
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(13);
         jTextArea1 = new javax.swing.JTextArea();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        IAppWidgetFactory.makeIAppScrollPane(jScrollPane2);
+        //IAppWidgetFactory.makeIAppScrollPane(jScrollPane2);
         jScrollPane2.getVerticalScrollBar().setUnitIncrement(13);
         jPanel2 = new javax.swing.JPanel();
-        jPanel2.setLayout(new BoxLayout(jPanel2, BoxLayout.PAGE_AXIS));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ChatClient");
         setForeground(java.awt.Color.black);
         setMinimumSize(new java.awt.Dimension(400, 200));
 
-        jPanel1.setBackground(new java.awt.Color(252, 252, 252));
+        jPanel1.setBackground(new java.awt.Color(244, 244, 244));
         jPanel1.setMinimumSize(new java.awt.Dimension(390, 160));
 
         jScrollPane1.setBorder(null);
@@ -82,6 +77,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextField1.setBorder(null);
         jTextField1.setNextFocusableComponent(jButton1);
         jTextField1.setPreferredSize(new java.awt.Dimension(59, 16));
         jTextField1.setSelectionColor(new java.awt.Color(204, 204, 204));
@@ -99,6 +95,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
             }
         });
 
+        jScrollPane2.setBackground(new java.awt.Color(244, 244, 244));
         jScrollPane2.setBorder(null);
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane2.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -106,7 +103,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         jScrollPane2.setHorizontalScrollBar(null);
         jScrollPane2.setMinimumSize(new java.awt.Dimension(50, 22));
 
-        jPanel2.setBackground(new java.awt.Color(252, 252, 252));
+        jPanel2.setBackground(new java.awt.Color(244, 244, 244));
         jPanel2.setAutoscrolls(true);
         jPanel2.setMaximumSize(new java.awt.Dimension(200, 200));
         jPanel2.setMinimumSize(new java.awt.Dimension(50, 20));

@@ -5,6 +5,7 @@
 package GUI;
 
 import Users.User;
+import java.awt.Color;
 
 /**
  *
@@ -15,18 +16,11 @@ public class UserPanel extends javax.swing.JPanel {
     /**
      * Creates new form UserPanel
      */
-    public UserPanel() {
-        initComponents();
-        jLabel1.setText("dummyUser");
-        setVisible(true);
-    }
-
     public UserPanel(User user) {
         initComponents();
         jLabel1.setText(user.getName());
-        add(jLabel1);
-        this.setSize(194, 34);        
         setVisible(true);
+
     }
 
     /**
@@ -40,11 +34,25 @@ public class UserPanel extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
 
-        setBackground(new java.awt.Color(243, 243, 243));
-        setMinimumSize(new java.awt.Dimension(50, 20));
-        setPreferredSize(new java.awt.Dimension(192, 42));
+        setBackground(new java.awt.Color(221, 221, 221));
+        setMaximumSize(new java.awt.Dimension(194, 40));
+        setMinimumSize(new java.awt.Dimension(194, 40));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                formMouseExited(evt);
+            }
+        });
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setBackground(new java.awt.Color(216, 216, 216));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(68, 68, 68));
+        jLabel1.setText("Unnamed");
+        jLabel1.setMaximumSize(new java.awt.Dimension(190, 28));
+        jLabel1.setMinimumSize(new java.awt.Dimension(190, 28));
+        jLabel1.setPreferredSize(new java.awt.Dimension(190, 28));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -52,17 +60,27 @@ public class UserPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(31, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
+        //setBackground(new Color(253, 253, 253, 253));
+        jLabel1.setForeground(Color.WHITE);
+    }//GEN-LAST:event_formMouseEntered
+
+    private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
+      //  setBackground(new Color(200, 200, 200, 200));
+        jLabel1.setForeground(new Color(68,68,68,255));
+    }//GEN-LAST:event_formMouseExited
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
