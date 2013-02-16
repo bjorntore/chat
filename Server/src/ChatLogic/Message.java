@@ -10,6 +10,7 @@ public class Message implements Serializable {
     private String chatroom = "";
     private String message = "";
     private String signal = "";
+    private ArrayList<User> connectedUsers = new ArrayList<>();
     private ArrayList<ArrayList> arrayList = new ArrayList<ArrayList>();
     
 
@@ -29,6 +30,11 @@ public class Message implements Serializable {
     }
      public Message(String signal) {
         this.signal = signal;
+    }
+     
+      public Message(String signal, ArrayList<User> connectedUsers) {
+        this.signal = signal;
+        this.connectedUsers = connectedUsers;
     }
 
     public Message(String signal, User fromUser) {
@@ -73,6 +79,10 @@ public class Message implements Serializable {
 
     public String getSignal() {
         return signal;
+    }
+    
+    public ArrayList<User> getConnectedUsers(){
+        return connectedUsers;
     }
 
     public ArrayList<ArrayList> getArrayList() {

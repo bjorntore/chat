@@ -6,37 +6,36 @@ package main;
 
 import ChatLogic.Message;
 import ChatLogic.ServerConnection;
-import GUI.ChatMainFrame;
 import ChatLogic.User;
+import GUI.ChatMainFrame;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
  * @author BjørnTore
  */
 public class ChatClient {
-    
+
     public ChatClient(String ip, int port, String username) throws ClassNotFoundException {
-   // ChatMainFrame chatMainFrame = new ChatMainFrame();
-        User user;
-        ArrayList<User> users = new ArrayList<>();
+        ChatMainFrame chatMainFrame = new ChatMainFrame();
+        Random random = new Random(1000000);
+
+
+        Message connectionMessage = new Message("CONNECT", new User(username + random.nextInt()));
+        ServerConnection serverConnection = new ServerConnection(ip, port);
+        serverConnection.sendMessage(connectionMessage);
         
+        try{
+         chatMainFrame.refreshUserList(serverConnection.getConnectedUsers());
+        }catch(NullPointerException ex){
+            System.out.println("No connected users.");
+        }        
         
-        
-        user = new User(username);
-        users.add(user);
-       
-        Message connectionMessage = new Message("CONNECT", user);
-        ServerConnection serverConnection = new ServerConnection(ip, port);  
-        serverConnection.sendMessage(connectionMessage);        
-        
-        //chatMainFrame.refreshUserList(users);
-        
-        //chatMainFrame.setVisible(true);
+        chatMainFrame.setVisible(true);
     }
-    
-    
-    public static void main(String[] args) throws ClassNotFoundException {		
-		new ChatClient("localhost", 10823,"Leif");	
-	}
+
+    public static void main(String[] args) throws ClassNotFoundException {
+        new ChatClient("localhost", 10823, "Leif");
+    }
 }

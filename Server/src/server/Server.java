@@ -52,12 +52,12 @@ public class Server extends JFrame {
                         System.out.println(msg.getSignal());
 
                         if (msg.getSignal().equalsIgnoreCase("CONNECT")) {
-                            System.out.println("HURRA\n");
+                            System.out.println("User " + msg.getFromUser().getName() + " connected.");
                             listOfOutStreams.add(oos);
-                            tempUser = ((Message) ois.readObject()).getFromUser();
+                            tempUser = msg.getFromUser();
                             tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
                             usersConnected.add(tempUser);
-                            //oos.writeObject(new Message("USER_LIST", ));
+                            oos.writeObject(new Message("CONNECTED_USERS", usersConnected));
                         }
                         if (msg.getSignal().equalsIgnoreCase("JOIN")) {
                             findServerChatroom(msg.getChatroom()).addUserToServerChatroom(oos);
