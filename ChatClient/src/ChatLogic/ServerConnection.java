@@ -3,6 +3,10 @@
  * and open the template in the editor.
  */
 package ChatLogic;
+import GUI.ChatMainFrame;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,8 +19,8 @@ import java.util.ArrayList;
  *
  * @author Stub
  */
-public class ServerConnection {
-    
+public class ServerConnection implements PropertyChangeListener {
+    private PropertyChangeSupport serverConnectionPCS;
     private Socket socket;
     private OutputStream os;
     private InputStream is;
@@ -26,16 +30,29 @@ public class ServerConnection {
     private ArrayList<ChatRoom> chatrooms = new ArrayList<>();
     private ArrayList<Message> messages = new ArrayList<>();
     private Thread serverListener;
-    
+
+    @Override
+    public void propertyChange(PropertyChangeEvent pce) {
+        
+    }
+    public void addPropertyChangeListener(PropertyChangeListener PCL){
+        serverConnectionPCS.addPropertyChangeListener(PCL);
+    }
     class ServerListener implements Runnable {
 
         public void run() {
             Message tempMsg;
             try {
                while(true){
+                   tempMsg=null;
                   tempMsg = (Message) ois.readObject();
                    messages.add(tempMsg);
-                   //TODO MASSE IF-SETTNINGA
+                  if(tempMsg.getSignal().equalsIgnoreCase("CONNECTED_USERS")){
+                      serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempMsg.getConnectedUsers());
+                      System.out.println("Størelse i serverconnection: "+tempMsg.getConnectedUsers().size());
+                     
+                  }
+                  
                }    
                 
                 
@@ -47,6 +64,7 @@ public class ServerConnection {
     }
     
     public ServerConnection(String ip, int port) {
+        serverConnectionPCS= new PropertyChangeSupport(this);
         try {
             socket = new Socket(ip, port);
             os = socket.getOutputStream();

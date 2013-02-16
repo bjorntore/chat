@@ -12,12 +12,14 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 public class Server {
 
     ArrayList<ServerChatroom> chatrooms = new ArrayList<ServerChatroom>();
-    ArrayList<User> usersConnected = new ArrayList<User>();
+   private  ArrayList<User> usersConnected = new ArrayList<User>();
     ArrayList<Socket> listOfSockets = new ArrayList<Socket>();
     ArrayList<Thread> listOfThreads = new ArrayList<Thread>();
     ArrayList<ObjectOutputStream> listOfOutStreams = new ArrayList<ObjectOutputStream>();
@@ -53,8 +55,9 @@ public class Server {
                             User tempUser  = msg.getFromUser();
                             tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
                             usersConnected.add(tempUser);
-                            oos.writeObject(new Message("CONNECTED_USERS", usersConnected));
-                            oos.writeObject(new Message("CONNECTED_USERS nr 2 bitch", usersConnected));
+                            sendUsersConnectedToAll(usersConnected);
+                            mainJFrame.writeOutput(usersConnected.size()+"");
+                     
                         }
                         if (msg.getSignal().equalsIgnoreCase("JOIN")) {
                             findServerChatroom(msg.getChatroom()).addUserToServerChatroom(oos);
@@ -94,6 +97,19 @@ public class Server {
             }
         }
         return null;
+    }
+    public void sendUsersConnectedToAll(ArrayList<User> al){
+        for (ObjectOutputStream outputstream : listOfOutStreams) {
+            try {
+                Message msg= new Message("CONNECTED_USERS", al);
+                mainJFrame.writeOutput("Størrelse på lista: "+msg.getConnectedUsers().size());
+                outputstream.writeObject(msg);
+                
+                mainJFrame.writeOutput("sendUsersConnectedToAll");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) {

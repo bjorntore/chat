@@ -23,13 +23,16 @@ public class ChatMainFrame extends javax.swing.JFrame {
         initComponents();
     }
 
-    public void refreshUserList(ArrayList<User> RefreshedListOfUsers) {
+    public void refreshUserList(ArrayList<User> refreshedListOfUsers) {
         jPanel2.removeAll();
-
+        for (User user : refreshedListOfUsers) {
+            System.out.println(user.getName());
+        }
+        System.out.println("----------------");
         jPanel2.setLayout(new GridLayout(10, 1, 0, 2));
 
         UserPanel userPanel;
-        for (User user : RefreshedListOfUsers) {
+        for (User user : refreshedListOfUsers) {
             userPanel = new UserPanel(user);
             jPanel2.add(userPanel);
         }
