@@ -28,7 +28,6 @@ public class Server {
     User serverUser = new User("Server");
 
     public Server() {
-        chatrooms.add(new ServerChatroom("CHATROOM1")); //for testing
         class ConnectionHandler implements Runnable {
 
             Socket clientSocket;
@@ -60,13 +59,22 @@ public class Server {
                                 break;
 
                             case "JOIN":
-                                findServerChatroom(msg.getChatroom()).addUserToServerChatroom(oos);
+                               mainJFrame.writeOutput(msg.getFromUser()+" joinet chatroom: "+findServerChatroom(msg.getChatroom()).getName());
+                               findServerChatroom(msg.getChatroom()).addUserToServerChatroom(oos);
+                                
                                 break;
 
                             case "SEND_TO_CHATROOM":
                                 findServerChatroom(msg.getChatroom()).writeToServerChatroom(msg);
                                 break;
 
+                            case "CREATE_PUBLIC_CHATROOM":
+                                  
+                                if(findServerChatroom(msg.getChatroom())==null) {
+                                    chatrooms.add(new ServerChatroom(msg.getChatroom()));
+                                    mainJFrame.writeOutput("Made new Chatroom: "+chatrooms.get(chatrooms.size()-1).getName());
+                                }
+                                
                             case "SEND_TO_SERVER":
                                 mainJFrame.writeOutput(msg.getFromUser().getName() + ": " + msg.getMessage());
                                 sendMessage("SERVER_MESSAGE",msg.getMessage()+"", "DEFAULT", msg.getFromUser());
@@ -77,7 +85,7 @@ public class Server {
                         }
                     }
                 } catch (Exception ex) {
-                    System.out.println("BT: " + ex);
+                    ex.printStackTrace();
                 }
                 //TODO something
             }
@@ -101,10 +109,12 @@ public class Server {
 
     public ServerChatroom findServerChatroom(String name) {
         for (int i = 0; i < chatrooms.size(); i++) {
-            if (chatrooms.get(i).name.equalsIgnoreCase(name)) {
+            if (chatrooms.get(i).getName().equalsIgnoreCase(name)) {
                 return chatrooms.get(i);
             }
         }
+        
+        System.err.println("Fant ikke chatroom");
         return null;
     }
 

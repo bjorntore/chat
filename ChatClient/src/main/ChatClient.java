@@ -41,6 +41,9 @@ public class ChatClient implements PropertyChangeListener {
         serverConnection.addPropertyChangeListener(this);
         serverConnection.connect(ip, port);
         serverConnection.sendMessage(connectionMessage);
+       // serverConnection.sendMessage(new Message("CREATE_PUBLIC_CHATROOM","TEST", user));
+        serverConnection.sendMessage(new Message("JOIN", "TEST", user));
+        
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
@@ -54,7 +57,7 @@ public class ChatClient implements PropertyChangeListener {
             System.exit(0);
         }
         
-        chatClient = new ChatClient("31.45.22.215", 10823, nickname);
+        chatClient = new ChatClient("localhost", 10823, nickname);
     }
 
     @Override

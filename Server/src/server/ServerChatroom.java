@@ -6,8 +6,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class ServerChatroom {
-	ArrayList<ObjectOutputStream> listOfOutStreams= new ArrayList<>();
-	String name;
+	private ArrayList<ObjectOutputStream> listOfOutStreams= new ArrayList<>();
+	private String name;
 	
 	public void writeToServerChatroom(Message msg){
 		
@@ -42,5 +42,9 @@ public class ServerChatroom {
 
 		new ServerChatroom("test");
 	}
+
+    String getName() {
+        return name;
+    }
 
 }

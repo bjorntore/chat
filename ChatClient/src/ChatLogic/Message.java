@@ -31,6 +31,11 @@ public class Message implements Serializable {
      public Message(String signal) {
         this.signal = signal;
     }
+     public Message(String signal, String chatroom, User user) {
+        this.signal = signal;
+        this.chatroom = chatroom;
+        this.fromUser= user;
+    }
      
       public Message(String signal, ArrayList<User> connectedUsers) {
         this.signal = signal;
