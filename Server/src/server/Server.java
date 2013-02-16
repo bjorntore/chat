@@ -40,7 +40,7 @@ public class Server {
                     ObjectOutputStream oos = new ObjectOutputStream(os);                   
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
-                    User tempUser;
+                    
 
                     while (true) {
                         mainJFrame.writeOutput("Mottar melding...");
@@ -50,7 +50,7 @@ public class Server {
                         if (msg.getSignal().equalsIgnoreCase("CONNECT")) {
                             mainJFrame.writeOutput("User " + msg.getFromUser().getName() + " connected.");
                             listOfOutStreams.add(oos);
-                            tempUser = msg.getFromUser();
+                            User tempUser = tempUser = msg.getFromUser();
                             tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
                             usersConnected.add(tempUser);
                             oos.writeObject(new Message("CONNECTED_USERS", usersConnected));
