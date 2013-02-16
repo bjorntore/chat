@@ -4,9 +4,12 @@
  */
 package main;
 
+import ChatLogic.Message;
+import ChatLogic.ServerConnection;
 import GUI.ChatMainFrame;
 import ChatLogic.User;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -15,7 +18,16 @@ import java.util.ArrayList;
 public class ChatClient {
 
     private static ChatMainFrame chatMainFrame = new ChatMainFrame();
-
+    private static ServerConnection serverConnection;
+    private static User user;
+    private static ArrayList<User> users = new ArrayList<>();
+    
+    public ChatClient(){        
+        serverConnection = new ServerConnection("localhost", 10823);  
+        Random random = new Random(100000);
+        user = new User("User" + random.nextInt());
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -39,18 +51,10 @@ public class ChatClient {
             java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
-        User stian = new User("Stian", "I like cats");
-        User bt = new User("Bjørn Tore", "I LIKE cats");
-        User iver = new User("Iver" , "I fucking LOVE tractors!");
-        User rasmus = new User("Rasmus", "Do you even lift?");
-
-        ArrayList<User> users = new ArrayList<>();
-        users.add(stian);
-        users.add(bt);
-        users.add(iver);
-        users.add(rasmus);
-
+        
+        Message connectionMessage = new Message("CONNECT", user);
+        serverConnection.sendMessage(connectionMessage);
+        
         chatMainFrame.refreshUserList(users);
         chatMainFrame.setVisible(true);
         /* Create and display the form */

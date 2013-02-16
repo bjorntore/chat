@@ -34,7 +34,7 @@ public class ServerConnection {
         try {
 
             socket = new Socket(ip, port);
-            
+
 
             is = socket.getInputStream();
             ois = new ObjectInputStream(is);
@@ -44,20 +44,26 @@ public class ServerConnection {
                 if (msg.getSignal().equalsIgnoreCase("CHATROOMMESSAGE")) {
                     findChatroom(msg.getChatroom()).addMessage(msg);
                 }
-
-
             }
-
         } catch (Exception ex) {
         }
     }
 
-    public void sendMessage(String signal,String msg, String chatroom, User fromUser ) {
+    public void sendMessage(String signal, String msg, String chatroom, User fromUser) {
         try {
-            
             os = socket.getOutputStream();
             oos = new ObjectOutputStream(os);
-            oos.writeObject(new Message(signal,msg, chatroom, fromUser ));
+            oos.writeObject(new Message(signal, msg, chatroom, fromUser));
+        } catch (IOException ex) {
+            Logger.getLogger(ServerConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void sendMessage(Message msg) {
+        try {
+            os = socket.getOutputStream();
+            oos = new ObjectOutputStream(os);
+            oos.writeObject(msg);
         } catch (IOException ex) {
             Logger.getLogger(ServerConnection.class.getName()).log(Level.SEVERE, null, ex);
         }

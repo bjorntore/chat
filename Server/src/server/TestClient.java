@@ -1,4 +1,4 @@
-package server;
+/*package server;
 
 
 import java.io.IOException;
@@ -73,7 +73,7 @@ public class TestClient extends JFrame{
 			InputStream is = socket.getInputStream();   
 			ObjectInputStream ois = new ObjectInputStream(is); 
 			
-			Message msg=new Message("Stian");
+			Message msg= new Message("Stian");
 			msg.setSignal("JOIN");
 			msg.setchatroom("CHATROOM1");
 			
@@ -96,3 +96,4 @@ public class TestClient extends JFrame{
 		
 	}
 }
+*/

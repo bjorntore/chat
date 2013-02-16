@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 public class Message implements Serializable {
 
-     private User fromUser;
-     private String chatroom = "";
-     private String message = "";
-     private String signal = "";
-     private ArrayList<ArrayList> arrayList = new ArrayList<ArrayList>();
+    private User fromUser;
+    private String chatroom = "";
+    private String message = "";
+    private String signal = "";
+    private ArrayList<ArrayList> arrayList = new ArrayList<ArrayList>();
 
     public Message(String signal, String message, String chatroom, User fromUser, ArrayList<ArrayList> arraylist) {
         this.signal = signal;
@@ -18,15 +18,18 @@ public class Message implements Serializable {
         this.fromUser = fromUser;
         this.arrayList = arraylist;
     }
-   
+
     public Message(String signal, String message, String chatroom, User fromUser) {
         this.signal = signal;
         this.message = message;
         this.chatroom = chatroom;
         this.fromUser = fromUser;
     }
-    
-    
+
+    public Message(String signal, User fromUser) {
+        this.signal = signal;
+        this.fromUser = fromUser;
+    }
 
     public void setFromUser(User fromUser) {
         this.fromUser = fromUser;

@@ -1,4 +1,4 @@
-package ChatLogic;
+package server;
 
 /**
  *
