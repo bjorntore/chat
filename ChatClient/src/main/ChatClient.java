@@ -8,7 +8,6 @@ import ChatLogic.Message;
 import ChatLogic.ServerConnection;
 import ChatLogic.User;
 import GUI.ChatMainFrame;
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -19,6 +18,7 @@ public class ChatClient {
 
     public ChatClient(String ip, int port, String username) throws ClassNotFoundException {
         ChatMainFrame chatMainFrame = new ChatMainFrame();
+        chatMainFrame.setVisible(true);
         Random random = new Random(1000000);
 
 
@@ -32,7 +32,7 @@ public class ChatClient {
             System.out.println("No connected users.");
         }        
         
-        chatMainFrame.setVisible(true);
+        
     }
 
     public static void main(String[] args) throws ClassNotFoundException {

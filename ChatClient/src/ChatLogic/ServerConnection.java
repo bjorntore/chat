@@ -52,16 +52,15 @@ public class ServerConnection {
     public void sendMessage(Message msg) {
         try {
             oos.writeObject(msg);
-            while (true) {
-                msg = (Message) ois.readObject();
-                if (msg.getSignal().equalsIgnoreCase("CONNECTION_SUCCESSFUL")) {
-                    System.out.println("Connection to server successful.");
-                    //findChatroom(msg.getChatroom()).addMessage(msg);
-                }
-                else if(msg.getSignal().equalsIgnoreCase("CONNECTED_USERS")){
-                    connectedUsers = msg.getConnectedUsers();
-                }
+
+            msg = (Message) ois.readObject();
+            if (msg.getSignal().equalsIgnoreCase("CONNECTION_SUCCESSFUL")) {
+                System.out.println("Connection to server successful.");
+                //findChatroom(msg.getChatroom()).addMessage(msg);
+            } else if (msg.getSignal().equalsIgnoreCase("CONNECTED_USERS")) {
+                connectedUsers = msg.getConnectedUsers();
             }
+
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -70,8 +69,6 @@ public class ServerConnection {
     public ArrayList<User> getConnectedUsers() {
         return connectedUsers;
     }
-    
-    
 
     public ChatRoom findChatroom(String name) {
         for (int i = 0; i < chatrooms.size(); i++) {

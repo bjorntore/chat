@@ -2,6 +2,7 @@ package server;
 
 import ChatLogic.Message;
 import ChatLogic.User;
+import GUI.ServerMainJFrame;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +14,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 
-public class Server extends JFrame {
+public class Server {
 
     ArrayList<ServerChatroom> chatrooms = new ArrayList<ServerChatroom>();
     ArrayList<User> usersConnected = new ArrayList<User>();
@@ -21,8 +22,9 @@ public class Server extends JFrame {
     ArrayList<Thread> listOfThreads = new ArrayList<Thread>();
     ArrayList<ObjectOutputStream> listOfOutStreams = new ArrayList<ObjectOutputStream>();
     ArrayList<DataInputStream> listOfInStreams = new ArrayList<DataInputStream>();
+    ServerMainJFrame mainJFrame = new ServerMainJFrame();
 
-    public Server() {
+    public Server() {              
         chatrooms.add(new ServerChatroom("CHATROOM1")); //for testing
         class ConnectionHandler implements Runnable {
 
@@ -30,29 +32,23 @@ public class Server extends JFrame {
 
             public ConnectionHandler(Socket clientSocket) {
                 this.clientSocket = clientSocket;
-                System.out.println("startes threaden?");
             }
 
             public void run() {
                 try {
-                    System.out.append("Kjører run()\n");
                     OutputStream os = clientSocket.getOutputStream();
-                    System.out.append("Kjører run() 1\n");
-                    ObjectOutputStream oos = new ObjectOutputStream(os);
-                    System.out.append("Kjører run() 2\n");                    
+                    ObjectOutputStream oos = new ObjectOutputStream(os);                   
                     InputStream is = clientSocket.getInputStream();
-                    System.out.append("Kjører run() 3\n");
                     ObjectInputStream ois = new ObjectInputStream(is);
-                    System.out.append("Kjører run()4\n");
                     User tempUser;
 
                     while (true) {
-                        System.out.append("Mottas d melding?\n");
+                        mainJFrame.writeOutput("Mottar melding...");
                         Message msg = (Message)ois.readObject();
                         System.out.println(msg.getSignal());
 
                         if (msg.getSignal().equalsIgnoreCase("CONNECT")) {
-                            System.out.println("User " + msg.getFromUser().getName() + " connected.");
+                            mainJFrame.writeOutput("User " + msg.getFromUser().getName() + " connected.");
                             listOfOutStreams.add(oos);
                             tempUser = msg.getFromUser();
                             tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
@@ -72,9 +68,7 @@ public class Server extends JFrame {
                 //TODO something
             }
         }
-        System.out.println("Server up and running");
-        show();										//midlertidig til vi har ordna skikkeli serverGUI
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        mainJFrame.writeOutput("Server up and running");
 
         try {
             ServerSocket serverSocket = new ServerSocket(10823);
@@ -84,7 +78,7 @@ public class Server extends JFrame {
                     listOfSockets.add(serverSocket.accept());
                     listOfThreads.add(new Thread(new ConnectionHandler(listOfSockets.get(listOfSockets.size() - 1))));
                     listOfThreads.get(listOfThreads.size() - 1).start();
-                    System.out.println("connected bitch");
+                    mainJFrame.writeOutput("Socket assigned to client");
                 }
             }
         } catch (IOException ex) {
