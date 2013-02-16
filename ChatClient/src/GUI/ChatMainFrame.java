@@ -5,10 +5,12 @@
 package GUI;
 
 import ChatLogic.User;
+import java.awt.Font;
 //import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  *
@@ -25,12 +27,6 @@ public class ChatMainFrame extends javax.swing.JFrame {
 
     public void refreshUserList(ArrayList<User> refreshedListOfUsers) {
         jPanel2.removeAll();
-
-        for (User user : refreshedListOfUsers) {
-            System.out.println(user.getName());
-        }
-
-        System.out.println("----------------");
         jPanel2.setLayout(new GridLayout(10, 1, 0, 2));
 
         UserPanel userPanel;
@@ -61,7 +57,6 @@ public class ChatMainFrame extends javax.swing.JFrame {
         //IAppWidgetFactory.makeIAppScrollPane(jScrollPane2);
         jScrollPane2.getVerticalScrollBar().setUnitIncrement(13);
         jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ChatClient");
@@ -117,25 +112,15 @@ public class ChatMainFrame extends javax.swing.JFrame {
         jPanel2.setMinimumSize(new java.awt.Dimension(50, 20));
         jPanel2.setPreferredSize(new java.awt.Dimension(292, 432));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel1.setText("No server connection");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1)
-                .addContainerGap(141, Short.MAX_VALUE))
+            .addGap(0, 292, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(200, 200, 200)
-                .addComponent(jLabel1)
-                .addContainerGap(217, Short.MAX_VALUE))
+            .addGap(0, 437, Short.MAX_VALUE)
         );
 
         jScrollPane2.setViewportView(jPanel2);
@@ -161,8 +146,10 @@ public class ChatMainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(11, 11, 11)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -184,28 +171,45 @@ public class ChatMainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseReleased
-        if (jTextArea1.getText().equals("")) {
-            jTextArea1.setText("  " + jTextField1.getText());
-        } else {
-            jTextArea1.setText(jTextArea1.getText() + "\n  " + jTextField1.getText());
+    public void writeOutput(String output) {
+        if (!output.trim().equals("")) {
+            if (jTextArea1.getText().equals("")) {
+                jTextArea1.setText(getTimeStamp() + output);
+            } else {
+                jTextArea1.setText(jTextArea1.getText() + "\n" + getTimeStamp() + output);
+            }
         }
+    }
+
+    private String getTimeStamp() {
+        String hours;
+        String minutes;
+        if (Calendar.getInstance().getTime().getHours() < 10) {
+            hours = "0" + Calendar.getInstance().getTime().getHours();
+        } else {
+            hours = "" + Calendar.getInstance().getTime().getHours();
+        }
+        if (Calendar.getInstance().getTime().getMinutes() < 10) {
+            minutes = "0" + Calendar.getInstance().getTime().getMinutes();
+        } else {
+            minutes = "" + Calendar.getInstance().getTime().getMinutes();
+        }
+        return "  [" + hours + ":" + minutes + "]  ";
+    }
+
+    private void jButton1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseReleased
+        writeOutput(jTextField1.getText());
         jTextField1.setText("");
     }//GEN-LAST:event_jButton1MouseReleased
 
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (jTextArea1.getText().equals("")) {
-                jTextArea1.setText("  " + jTextField1.getText());
-            } else {
-                jTextArea1.setText(jTextArea1.getText() + "\n  " + jTextField1.getText());
-            }
-            jTextField1.setText("");
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+        writeOutput(jTextField1.getText());
+        jTextField1.setText("");
         }
     }//GEN-LAST:event_jTextField1KeyPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

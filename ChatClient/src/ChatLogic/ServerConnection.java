@@ -14,6 +14,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,20 +33,35 @@ public class ServerConnection implements PropertyChangeListener {
     private ArrayList<ChatRoom> chatrooms = new ArrayList<>();
     private ArrayList<Message> messages = new ArrayList<>();
     private Thread serverListener;
+    int attempts = 0;
 
-    public ServerConnection(String ip, int port) {
+    public ServerConnection() {
         serverConnectionPCS = new PropertyChangeSupport(this);
-        try {
-            socket = new Socket(ip, port);
-            os = socket.getOutputStream();
-            oos = new ObjectOutputStream(os);
-            is = socket.getInputStream();
-            ois = new ObjectInputStream(is);
-            serverListener = new Thread(new ServerListener());
-            serverListener.start();
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    }
+
+    public void connect(String ip, int port) {
+        while (socket == null) {
+            try {
+                attempts++;
+                socket = new Socket(ip, port);
+                os = socket.getOutputStream();
+                oos = new ObjectOutputStream(os);
+                is = socket.getInputStream();
+                ois = new ObjectInputStream(is);
+                serverListener = new Thread(new ServerListener());
+                serverListener.start();
+                serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_FAILED", null, "Connected to server.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                int seconds = 5;
+                serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_FAILED", null, "No server found, retrying in " + seconds + " seconds (" + attempts + ")");
+                try {
+                    Thread.sleep(seconds*1000);
+                } catch (InterruptedException ex1) {
+                    Logger.getLogger(ServerConnection.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
         }
     }
 
@@ -82,7 +99,12 @@ public class ServerConnection implements PropertyChangeListener {
         serverConnectionPCS.addPropertyChangeListener(PCL);
     }
 
+    public void destroySocket() {
+        socket = null;
+    }
+
     class ServerListener implements Runnable {
+
         public void run() {
             Message tempMsg;
             try {
@@ -91,13 +113,19 @@ public class ServerConnection implements PropertyChangeListener {
                     messages.add(tempMsg);
                     if (tempMsg.getSignal().equalsIgnoreCase("CONNECTED_USERS")) {
                         serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempMsg.getConnectedUsers());
-                    }
-                    else {
+                    } else {
                         System.out.println(tempMsg.getSignal());
                     }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
+                int seconds = 5;
+                serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_LOST", null, "Connection to server lost, attempting reconnect");
+                try {
+                    Thread.sleep(seconds*1000);
+                } catch (InterruptedException ex1) {
+                    Logger.getLogger(ServerConnection.class.getName()).log(Level.SEVERE, null, ex1);
+                }
             }
 
         }

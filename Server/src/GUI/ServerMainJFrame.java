@@ -22,10 +22,27 @@ public class ServerMainJFrame extends javax.swing.JFrame {
 
     public void writeOutput(String output) {
         if (jTextArea2.getText().equals("")) {
-            jTextArea2.setText("  [" + Calendar.getInstance().getTime().getHours() + ":" + Calendar.getInstance().getTime().getMinutes() + "]  " + output);
+            jTextArea2.setText(getTimeStamp() + output);
         } else {
-            jTextArea2.setText(jTextArea2.getText() + "\n  " + Calendar.getInstance().getTime().getHours() + ":" + Calendar.getInstance().getTime().getMinutes() + ": " + output);
+            jTextArea2.setText(jTextArea2.getText() + "\n" + getTimeStamp() + output);
         }
+    }
+    
+    
+    private String getTimeStamp() {
+        String hours;
+        String minutes;
+        if (Calendar.getInstance().getTime().getHours() < 10) {
+            hours = "0" + Calendar.getInstance().getTime().getHours();
+        } else {
+            hours = "" + Calendar.getInstance().getTime().getHours();
+        }
+        if (Calendar.getInstance().getTime().getMinutes() < 10) {
+            minutes = "0" + Calendar.getInstance().getTime().getMinutes();
+        } else {
+            minutes = "" + Calendar.getInstance().getTime().getMinutes();
+        }
+        return "  [" + hours + ":" + minutes + "]  ";
     }
 
     /**

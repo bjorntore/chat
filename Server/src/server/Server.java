@@ -47,10 +47,10 @@ public class Server {
                         Message msg = (Message)ois.readObject();
 
                         if (msg.getSignal().equalsIgnoreCase("CONNECT")) {
-                            mainJFrame.writeOutput("User " + msg.getFromUser().getName() + clientSocket.getInetAddress().toString().substring(1) + " connected.");
+                            mainJFrame.writeOutput("User " + msg.getFromUser().getName() + " (" + clientSocket.getInetAddress().toString().substring(1) + ") connected");
                             listOfOutStreams.add(oos);
                             User tempUser  = msg.getFromUser();
-                            //tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
+                            tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
                             usersConnected.add(tempUser);
                             sendUsersConnectedToAll();                     
                         }
@@ -77,7 +77,6 @@ public class Server {
                     listOfSockets.add(serverSocket.accept());
                     listOfThreads.add(new Thread(new ConnectionHandler(listOfSockets.get(listOfSockets.size() - 1))));
                     listOfThreads.get(listOfThreads.size() - 1).start();
-                    mainJFrame.writeOutput("Socket assigned to client");
                 }
             }
         } catch (IOException ex) {

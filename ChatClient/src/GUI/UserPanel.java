@@ -37,9 +37,6 @@ public class UserPanel extends javax.swing.JPanel {
         setVisible(true);
     }
 
-    
-    
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -84,15 +81,13 @@ public class UserPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -102,16 +97,14 @@ public class UserPanel extends javax.swing.JPanel {
 
     private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
         jLabel1.setForeground(new Color(68, 68, 68, 255));
+        setSize(194, 44);
+        setBackground(new Color(221, 221, 221, 255));
+        revalidate();
+        contactOptionsVisible = false;
 
-        if (contactOptionsVisible) {
-            //contactOptions.setOpaque(false);
-            setSize(194, 44);
-            contactOptionsVisible = false;
-        }
     }//GEN-LAST:event_formMouseExited
 
     private void initContactOptionPanels() {
-
         test.setBounds(3, 44, 186, 41);
         test.setBackground(new Color(248, 248, 248, 255));
         test.setLayout(null);
@@ -141,11 +134,12 @@ public class UserPanel extends javax.swing.JPanel {
         }
         if (!contactOptionsVisible) {
             setSize(194, 133);
-            //contactOptions.setOpaque(true);
-            contactOptionsVisible = true; 
+            setBackground(new Color(166, 166, 166, 255));
+            contactOptionsVisible = true;
         } else {
-            // contactOptions.setOpaque(false);
             setSize(194, 44);
+            setBackground(new Color(221, 221, 221, 255));
+            revalidate();
             contactOptionsVisible = false;
 
         }
