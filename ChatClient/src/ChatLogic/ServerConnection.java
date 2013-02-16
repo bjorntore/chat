@@ -59,7 +59,7 @@ public class ServerConnection implements PropertyChangeListener {
                 try {
                     Thread.sleep(seconds * 1000);
                 } catch (InterruptedException ex1) {
-                    Logger.getLogger(ServerConnection.class.getName()).log(Level.SEVERE, null, ex1);
+                    ex.printStackTrace();
                 }
             }
         }

@@ -80,6 +80,8 @@ public class Server {
                                 sendMessage("SERVER_MESSAGE",msg.getMessage()+"", "DEFAULT", msg.getFromUser());
                                 break;
 
+                            
+                            
                             default:
                                 break;
                         }
@@ -106,7 +108,33 @@ public class Server {
             System.err.println(ex);
         }
     }
+   class UpdateClients implements Runnable{
 
+        @Override
+        public void run() {
+            ArrayList tempList= new ArrayList();
+            while(true){
+            for (ObjectOutputStream oos : listOfOutStreams ) {
+                try {
+                   for (ServerChatroom serverChatroom : chatrooms) {
+                        tempList.add(serverChatroom);
+                    }
+                   
+                    sendUsersConnectedToAll();
+                    oos.writeObject(new Message("REFRESH_CHATROOMLIST", chatrooms,""));
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                   ex.printStackTrace();
+                }
+        }}
+       
+   }
     public ServerChatroom findServerChatroom(String name) {
         for (int i = 0; i < chatrooms.size(); i++) {
             if (chatrooms.get(i).getName().equalsIgnoreCase(name)) {
@@ -145,8 +173,23 @@ public class Server {
             }
         }
     }
-
+    public ArrayList<ServerChatroom> getChatrooms(){
+        return chatrooms;
+    }
+    public void updateClientChatroomList(ObjectOutputStream oos){
+        try {
+            ArrayList al= new ArrayList();
+            for (ServerChatroom serverChatroom : chatrooms) {
+                al.add(serverChatroom);
+            }
+            oos.writeObject(new Message("CHATROOM_LIST_UPDATE", al, ""));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     public static void main(String[] args) {
         Server server = new Server();
     }
+    
 }
