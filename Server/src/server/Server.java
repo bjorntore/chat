@@ -18,24 +18,24 @@ import javax.swing.JFrame;
 
 public class Server {
 
-    ArrayList<ServerChatroom> chatrooms = new ArrayList<ServerChatroom>();
-   private  ArrayList<User> usersConnected = new ArrayList<User>();
-    ArrayList<Socket> listOfSockets = new ArrayList<Socket>();
-    ArrayList<Thread> listOfThreads = new ArrayList<Thread>();
-    ArrayList<ObjectOutputStream> listOfOutStreams = new ArrayList<ObjectOutputStream>();
-    ArrayList<DataInputStream> listOfInStreams = new ArrayList<DataInputStream>();
+    ArrayList<ServerChatroom> chatrooms = new ArrayList<>();
+    public static ArrayList<User> usersConnected = new ArrayList<>();
+    ArrayList<Socket> listOfSockets = new ArrayList<>();
+    ArrayList<Thread> listOfThreads = new ArrayList<>();
+    ArrayList<ObjectOutputStream> listOfOutStreams = new ArrayList<>();
+    ArrayList<DataInputStream> listOfInStreams = new ArrayList<>();
     ServerMainJFrame mainJFrame = new ServerMainJFrame();
 
     public Server() {              
         chatrooms.add(new ServerChatroom("CHATROOM1")); //for testing
         class ConnectionHandler implements Runnable {
-
             Socket clientSocket;
-
+            
             public ConnectionHandler(Socket clientSocket) {
                 this.clientSocket = clientSocket;
             }
 
+            @Override
             public void run() {
                 try {
                     OutputStream os = clientSocket.getOutputStream();
@@ -43,21 +43,16 @@ public class Server {
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
                     
-
                     while (true) {
-                        mainJFrame.writeOutput("Mottar melding...");
                         Message msg = (Message)ois.readObject();
-                        System.out.println(msg.getSignal());
 
                         if (msg.getSignal().equalsIgnoreCase("CONNECT")) {
-                            mainJFrame.writeOutput("User " + msg.getFromUser().getName() + " connected.");
+                            mainJFrame.writeOutput("User " + msg.getFromUser().getName() + clientSocket.getInetAddress().toString().substring(1) + " connected.");
                             listOfOutStreams.add(oos);
                             User tempUser  = msg.getFromUser();
-                            tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
+                            //tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
                             usersConnected.add(tempUser);
-                            sendUsersConnectedToAll(usersConnected);
-                            mainJFrame.writeOutput(usersConnected.size()+"");
-                     
+                            sendUsersConnectedToAll();                     
                         }
                         if (msg.getSignal().equalsIgnoreCase("JOIN")) {
                             findServerChatroom(msg.getChatroom()).addUserToServerChatroom(oos);
@@ -98,18 +93,23 @@ public class Server {
         }
         return null;
     }
-    public void sendUsersConnectedToAll(ArrayList<User> al){
+    
+    public void sendUsersConnectedToAll(){
+        ArrayList<User> tempUserList = new ArrayList<>();
+        for (User user : usersConnected) {
+                tempUserList.add(user);       
+        }
+        
         for (ObjectOutputStream outputstream : listOfOutStreams) {
             try {
-                Message msg= new Message("CONNECTED_USERS", al);
-                mainJFrame.writeOutput("Størrelse på lista: "+msg.getConnectedUsers().size());
-                outputstream.writeObject(msg);
-                
-                mainJFrame.writeOutput("sendUsersConnectedToAll");
+                Message msg= new Message("CONNECTED_USERS", tempUserList); 
+                outputstream.writeObject(msg);                
+               
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+         
     }
 
     public static void main(String[] args) {

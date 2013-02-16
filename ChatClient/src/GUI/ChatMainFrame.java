@@ -25,9 +25,11 @@ public class ChatMainFrame extends javax.swing.JFrame {
 
     public void refreshUserList(ArrayList<User> refreshedListOfUsers) {
         jPanel2.removeAll();
+
         for (User user : refreshedListOfUsers) {
             System.out.println(user.getName());
         }
+
         System.out.println("----------------");
         jPanel2.setLayout(new GridLayout(10, 1, 0, 2));
 
@@ -36,6 +38,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
             userPanel = new UserPanel(user);
             jPanel2.add(userPanel);
         }
+        jPanel2.validate();
     }
 
     /**
@@ -58,6 +61,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
         //IAppWidgetFactory.makeIAppScrollPane(jScrollPane2);
         jScrollPane2.getVerticalScrollBar().setUnitIncrement(13);
         jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ChatClient");
@@ -105,22 +109,33 @@ public class ChatMainFrame extends javax.swing.JFrame {
         jScrollPane2.setAutoscrolls(true);
         jScrollPane2.setHorizontalScrollBar(null);
         jScrollPane2.setMinimumSize(new java.awt.Dimension(50, 22));
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(196, 439));
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(198, 439));
 
         jPanel2.setBackground(new java.awt.Color(244, 244, 244));
         jPanel2.setAutoscrolls(true);
         jPanel2.setMaximumSize(new java.awt.Dimension(200, 200));
         jPanel2.setMinimumSize(new java.awt.Dimension(50, 20));
+        jPanel2.setPreferredSize(new java.awt.Dimension(292, 432));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel1.setText("No server connection");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 196, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel1)
+                .addContainerGap(141, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 437, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(200, 200, 200)
+                .addComponent(jLabel1)
+                .addContainerGap(217, Short.MAX_VALUE))
         );
 
         jScrollPane2.setViewportView(jPanel2);
@@ -146,7 +161,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1))
                 .addGap(11, 11, 11)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -190,6 +205,7 @@ public class ChatMainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1KeyPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

@@ -56,9 +56,9 @@ public class UserPanel extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(221, 221, 221));
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(212, 212, 212)));
-        setMaximumSize(new java.awt.Dimension(192, 40));
-        setMinimumSize(new java.awt.Dimension(192, 40));
-        setPreferredSize(new java.awt.Dimension(196, 40));
+        setMaximumSize(new java.awt.Dimension(192, 44));
+        setMinimumSize(new java.awt.Dimension(192, 44));
+        setPreferredSize(new java.awt.Dimension(196, 44));
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 formMouseClicked(evt);

@@ -27,13 +27,10 @@ public class ChatClient implements PropertyChangeListener {
         chatMainFrame.setVisible(true);
         Random random = new Random();
 
-
         Message connectionMessage = new Message("CONNECT", new User(username + random.nextInt(1000000)));
         serverConnection = new ServerConnection(ip, port);
         serverConnection.addPropertyChangeListener(this);
         serverConnection.sendMessage(connectionMessage);
-
-        
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
@@ -44,7 +41,6 @@ public class ChatClient implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName().equals("CONNECTED_USERS")) {
             chatMainFrame.refreshUserList((ArrayList<User>) pce.getNewValue());
-            System.err.print(((ArrayList<User>) pce.getNewValue()).size());
         }
     }
 }

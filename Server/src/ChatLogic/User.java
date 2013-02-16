@@ -23,6 +23,12 @@ public class User implements Serializable {
         return name;
     }
 
+    @Override
+    public User clone() throws CloneNotSupportedException {
+        return (User)super.clone();
+    }    
+    
+
     public String getSignature() {
         return signature;
     }

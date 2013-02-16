@@ -22,7 +22,7 @@ public class ServerMainJFrame extends javax.swing.JFrame {
 
     public void writeOutput(String output) {
         if (jTextArea2.getText().equals("")) {
-            jTextArea2.setText("  " + Calendar.getInstance().getTime().getHours() + ":" + Calendar.getInstance().getTime().getMinutes() + ": " + output);
+            jTextArea2.setText("  [" + Calendar.getInstance().getTime().getHours() + ":" + Calendar.getInstance().getTime().getMinutes() + "]  " + output);
         } else {
             jTextArea2.setText(jTextArea2.getText() + "\n  " + Calendar.getInstance().getTime().getHours() + ":" + Calendar.getInstance().getTime().getMinutes() + ": " + output);
         }
