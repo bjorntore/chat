@@ -1,10 +1,12 @@
 package ChatLogic;
 
+import java.io.Serializable;
+
 /**
  *
  * @author BjørnTore
  */
-public class User {
+public class User implements Serializable {
 
     private String name, signature,IP;
     

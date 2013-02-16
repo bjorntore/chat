@@ -23,11 +23,12 @@ public class Server extends JFrame {
     public Server() {
         chatrooms.add(new ServerChatroom("CHATROOM1")); //for testing
         class ConnectionHandler implements Runnable {
-
+           
             Socket clientSocket;
 
             public ConnectionHandler(Socket clientSocket) {
                 this.clientSocket = clientSocket;
+                 System.out.println ("startes threaden?");
             }
 
             public void run() {
@@ -39,9 +40,11 @@ public class Server extends JFrame {
                     User tempUser;
                     
                     while (true) {
+                        System.out.append("Mottas d melding?");
                         Message msg = (Message) ois.readObject();
-
+                        
                         if (msg.getSignal().equalsIgnoreCase("CONNECT")) {
+                            System.out.println("HURRA");
                             listOfOutStreams.add(oos);
                             tempUser = ((Message) ois.readObject()).getFromUser();
                             tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
@@ -57,7 +60,7 @@ public class Server extends JFrame {
                     }
                 } catch (IOException IOE) {
                 } catch (ClassNotFoundException e) {
-                    // TODO Auto-generated catch block
+                   
                     e.printStackTrace();
                 };
                 //TODO something
@@ -72,9 +75,11 @@ public class Server extends JFrame {
 
             while (true) {
                 if (serverSocket.isBound()) {
+                    
                     listOfSockets.add(serverSocket.accept());
                     listOfThreads.add(new Thread(new ConnectionHandler(listOfSockets.get(listOfSockets.size() - 1))));
                     listOfThreads.get(listOfThreads.size() - 1).start();
+                    System.out.println("connected bitch");
                 }
             }
         } catch (IOException ex) {

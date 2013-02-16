@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Message implements Serializable {
 
-    private User fromUser;
+   transient private User fromUser;
     private String chatroom = "";
     private String message = "";
     private String signal = "";
@@ -24,6 +24,9 @@ public class Message implements Serializable {
         this.message = message;
         this.chatroom = chatroom;
         this.fromUser = fromUser;
+    }
+     public Message(String signal) {
+        this.signal = signal;
     }
 
     public Message(String signal, User fromUser) {

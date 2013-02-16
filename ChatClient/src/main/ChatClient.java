@@ -22,10 +22,10 @@ public class ChatClient {
     private static User user;
     private static ArrayList<User> users = new ArrayList<>();
     
-    public ChatClient(){        
-        serverConnection = new ServerConnection("localhost", 10823);  
-        Random random = new Random(100000);
-        user = new User("User" + random.nextInt());
+    public ChatClient(){  
+
+       
+        
     }
     
     public static void main(String args[]) {
@@ -51,9 +51,15 @@ public class ChatClient {
             java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        serverConnection = new ServerConnection("localhost", 10823);  
+        Random random = new Random(100000);
         
-        Message connectionMessage = new Message("CONNECT", user);
+        user = new User("User" + random.nextInt());
+        users.add(user);
+       
+        Message connectionMessage = new Message("CONNECT");
         serverConnection.sendMessage(connectionMessage);
+        
         
         chatMainFrame.refreshUserList(users);
         chatMainFrame.setVisible(true);
