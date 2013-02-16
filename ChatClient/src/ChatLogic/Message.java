@@ -5,11 +5,13 @@ import java.util.ArrayList;
 
 public class Message implements Serializable {
 
-   transient private User fromUser;
+    private static final long serialVersionUID = 7526472295622776147L;  // unique id
+    private User fromUser;
     private String chatroom = "";
     private String message = "";
     private String signal = "";
     private ArrayList<ArrayList> arrayList = new ArrayList<ArrayList>();
+    
 
     public Message(String signal, String message, String chatroom, User fromUser, ArrayList<ArrayList> arraylist) {
         this.signal = signal;

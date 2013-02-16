@@ -9,60 +9,34 @@ import ChatLogic.ServerConnection;
 import GUI.ChatMainFrame;
 import ChatLogic.User;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  *
  * @author BjørnTore
  */
 public class ChatClient {
-
-    private static ChatMainFrame chatMainFrame = new ChatMainFrame();
-    private static ServerConnection serverConnection;
-    private static User user;
-    private static ArrayList<User> users = new ArrayList<>();
     
-    public ChatClient(){  
-
-       
+    public ChatClient(String ip, int port, String username) throws ClassNotFoundException {
+   // ChatMainFrame chatMainFrame = new ChatMainFrame();
+        User user;
+        ArrayList<User> users = new ArrayList<>();
         
-    }
-    
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ChatMainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        serverConnection = new ServerConnection("localhost", 10823);  
-        Random random = new Random(100000);
         
-        user = new User("User" + random.nextInt());
+        
+        user = new User(username);
         users.add(user);
        
-        Message connectionMessage = new Message("CONNECT");
-        serverConnection.sendMessage(connectionMessage);
+        Message connectionMessage = new Message("CONNECT", user);
+        ServerConnection serverConnection = new ServerConnection(ip, port);  
+        serverConnection.sendMessage(connectionMessage);        
         
+        //chatMainFrame.refreshUserList(users);
         
-        chatMainFrame.refreshUserList(users);
-        chatMainFrame.setVisible(true);
-        /* Create and display the form */
+        //chatMainFrame.setVisible(true);
     }
+    
+    
+    public static void main(String[] args) throws ClassNotFoundException {		
+		new ChatClient("localhost", 10823,"Leif");	
+	}
 }

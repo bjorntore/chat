@@ -1,5 +1,7 @@
 package server;
 
+import ChatLogic.Message;
+import ChatLogic.User;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,28 +25,34 @@ public class Server extends JFrame {
     public Server() {
         chatrooms.add(new ServerChatroom("CHATROOM1")); //for testing
         class ConnectionHandler implements Runnable {
-           
+
             Socket clientSocket;
 
             public ConnectionHandler(Socket clientSocket) {
                 this.clientSocket = clientSocket;
-                 System.out.println ("startes threaden?");
+                System.out.println("startes threaden?");
             }
 
             public void run() {
                 try {
-                    InputStream is = clientSocket.getInputStream();
-                    ObjectInputStream ois = new ObjectInputStream(is);
+                    System.out.append("Kjører run()\n");
                     OutputStream os = clientSocket.getOutputStream();
+                    System.out.append("Kjører run() 1\n");
                     ObjectOutputStream oos = new ObjectOutputStream(os);
+                    System.out.append("Kjører run() 2\n");                    
+                    InputStream is = clientSocket.getInputStream();
+                    System.out.append("Kjører run() 3\n");
+                    ObjectInputStream ois = new ObjectInputStream(is);
+                    System.out.append("Kjører run()4\n");
                     User tempUser;
-                    
+
                     while (true) {
-                        System.out.append("Mottas d melding?");
-                        Message msg = (Message) ois.readObject();
-                        
+                        System.out.append("Mottas d melding?\n");
+                        Message msg = (Message)ois.readObject();
+                        System.out.println(msg.getSignal());
+
                         if (msg.getSignal().equalsIgnoreCase("CONNECT")) {
-                            System.out.println("HURRA");
+                            System.out.println("HURRA\n");
                             listOfOutStreams.add(oos);
                             tempUser = ((Message) ois.readObject()).getFromUser();
                             tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
@@ -58,11 +66,9 @@ public class Server extends JFrame {
                             findServerChatroom(msg.getChatroom()).writeToServerChatroom(msg);
                         }
                     }
-                } catch (IOException IOE) {
-                } catch (ClassNotFoundException e) {
-                   
-                    e.printStackTrace();
-                };
+                } catch (Exception ex) {
+                    System.out.println("BT: " + ex);
+                }
                 //TODO something
             }
         }
@@ -75,7 +81,6 @@ public class Server extends JFrame {
 
             while (true) {
                 if (serverSocket.isBound()) {
-                    
                     listOfSockets.add(serverSocket.accept());
                     listOfThreads.add(new Thread(new ConnectionHandler(listOfSockets.get(listOfSockets.size() - 1))));
                     listOfThreads.get(listOfThreads.size() - 1).start();
@@ -98,10 +103,5 @@ public class Server extends JFrame {
 
     public static void main(String[] args) {
         Server server = new Server();
-    }
-
-    public enum Signal {
-
-        JOIN, LEAVE, SEND,
     }
 }

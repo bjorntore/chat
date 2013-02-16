@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @author BjørnTore
  */
 public class User implements Serializable {
-
+    private static final long serialVersionUID = 7526472295622776146L;  // unique id
     private String name, signature,IP;
     
     public User(String name){

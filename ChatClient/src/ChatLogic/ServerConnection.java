@@ -4,15 +4,12 @@
  */
 package ChatLogic;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -25,52 +22,47 @@ public class ServerConnection {
     InputStream is;
     ObjectOutputStream oos;
     ObjectInputStream ois;
-    Message msg;
     ArrayList<ChatRoom> chatrooms = new ArrayList<>();
+    Message msg;
 
     public ServerConnection(String ip, int port) {
-        
-        
         try {
-
             socket = new Socket(ip, port);
-           /*   is = socket.getInputStream();
+            os = socket.getOutputStream();
+            oos = new ObjectOutputStream(os);
+            is = socket.getInputStream();
             ois = new ObjectInputStream(is);
- 
-          while (true) {
-                msg = (Message) ois.readObject();
-                if (msg.getSignal().equalsIgnoreCase("CHATROOMMESSAGE")) {
-                    findChatroom(msg.getChatroom()).addMessage(msg);
-                }
-            }*/
+            System.out.println("Connected to server");
+
         } catch (Exception ex) {
             System.out.println(ex);
         }
     }
 
-    public void sendMessage(String signal, String msg, String chatroom, User fromUser) {
+    /*   public void sendMessage(String signal, String msg, String chatroom, User fromUser) {
         
-        try {
-          
-            os = socket.getOutputStream();
-            oos = new ObjectOutputStream(os);
-            oos.writeObject(new Message(signal, msg, chatroom, fromUser));
+     try {          
+     os = socket.getOutputStream();
+     oos = new ObjectOutputStream(os);
+     oos.writeObject(new Message(signal, msg, chatroom, fromUser));
            
-        } catch (IOException ex) {
+     } catch (IOException ex) {
            
-        }
-    }
-
+     }
+     }*/
     public void sendMessage(Message msg) {
-        
         try {
-             
-            os = socket.getOutputStream();
-            oos = new ObjectOutputStream(os);
             oos.writeObject(msg);
-           
-           
-        } catch (IOException ex) {
+            System.out.println("Melding sendt.");
+
+            while (true) {
+                msg = (Message) ois.readObject();
+                System.out.println(msg.getSignal());
+                /*if (msg.getSignal().equalsIgnoreCase("CHATROOMMESSAGE")) {
+                 findChatroom(msg.getChatroom()).addMessage(msg);
+                 }*/
+            }
+        } catch (Exception ex) {
             System.out.println(ex);
         }
     }
