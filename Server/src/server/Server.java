@@ -50,10 +50,11 @@ public class Server {
                         if (msg.getSignal().equalsIgnoreCase("CONNECT")) {
                             mainJFrame.writeOutput("User " + msg.getFromUser().getName() + " connected.");
                             listOfOutStreams.add(oos);
-                            User tempUser = tempUser = msg.getFromUser();
+                            User tempUser  = msg.getFromUser();
                             tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
                             usersConnected.add(tempUser);
                             oos.writeObject(new Message("CONNECTED_USERS", usersConnected));
+                            oos.writeObject(new Message("CONNECTED_USERS nr 2 bitch", usersConnected));
                         }
                         if (msg.getSignal().equalsIgnoreCase("JOIN")) {
                             findServerChatroom(msg.getChatroom()).addUserToServerChatroom(oos);
