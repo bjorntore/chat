@@ -45,7 +45,7 @@ public class Server extends JFrame {
 						if(msg.signal.equalsIgnoreCase("JOIN")){
 							findChatroom(msg.chatroom).addUserToChatroom(oos);
 						}
-						if(msg.signal.equalsIgnoreCase("SEND")){
+						if(msg.signal.equalsIgnoreCase("SEND_TO_CHATROOM")){
 							findChatroom(msg.chatroom).writeToChatroom(msg);
 						}
 					}
