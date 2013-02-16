@@ -5,7 +5,7 @@
 package main;
 
 import GUI.ChatMainFrame;
-import Users.User;
+import ChatLogic.User;
 import java.util.ArrayList;
 
 /**

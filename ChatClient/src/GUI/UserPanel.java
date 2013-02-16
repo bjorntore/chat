@@ -4,7 +4,7 @@
  */
 package GUI;
 
-import Users.User;
+import ChatLogic.User;
 import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.BorderFactory;

@@ -4,7 +4,7 @@
  */
 package GUI;
 
-import Users.User;
+import ChatLogic.User;
 //import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
