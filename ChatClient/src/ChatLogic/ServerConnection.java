@@ -51,13 +51,13 @@ public class ServerConnection implements PropertyChangeListener {
                 ois = new ObjectInputStream(is);
                 serverListener = new Thread(new ServerListener());
                 serverListener.start();
-                serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_FAILED", null, "Connected to server.");
+                serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_FAILED", null, "Connected to server");
             } catch (Exception ex) {
                 ex.printStackTrace();
                 int seconds = 5;
                 serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_FAILED", null, "No server found, retrying in " + seconds + " seconds (" + attempts + ")");
                 try {
-                    Thread.sleep(seconds*1000);
+                    Thread.sleep(seconds * 1000);
                 } catch (InterruptedException ex1) {
                     Logger.getLogger(ServerConnection.class.getName()).log(Level.SEVERE, null, ex1);
                 }
@@ -68,15 +68,14 @@ public class ServerConnection implements PropertyChangeListener {
     public void sendMessage(String signal, String msg, String chatroom, User fromUser) {
         try {
             oos.writeObject(new Message(signal, msg, chatroom, fromUser));
-
         } catch (Exception ex) {
+            System.out.println(ex);
         }
     }
 
     public void sendMessage(Message msg) {
         try {
             oos.writeObject(msg);
-
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -111,18 +110,28 @@ public class ServerConnection implements PropertyChangeListener {
                 while (true) {
                     tempMsg = (Message) ois.readObject();
                     messages.add(tempMsg);
-                    if (tempMsg.getSignal().equalsIgnoreCase("CONNECTED_USERS")) {
-                        serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempMsg.getConnectedUsers());
-                    } else {
-                        System.out.println(tempMsg.getSignal());
-                    }
+                    
+                    switch(tempMsg.getSignal()){
+                        case "CONNECTED_USERS":
+                            serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempMsg.getConnectedUsers());
+                            break;
+                        case "SERVER_MESSAGE":
+                            serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempMsg);
+                            break;
+                        default:
+                            serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempMsg);
+                            break;
+                    }                    
+                    
+                    
+                
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 int seconds = 5;
                 serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_LOST", null, "Connection to server lost, attempting reconnect");
                 try {
-                    Thread.sleep(seconds*1000);
+                    Thread.sleep(seconds * 1000);
                 } catch (InterruptedException ex1) {
                     Logger.getLogger(ServerConnection.class.getName()).log(Level.SEVERE, null, ex1);
                 }

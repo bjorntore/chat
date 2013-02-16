@@ -9,6 +9,9 @@ import java.awt.Font;
 //import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -16,12 +19,13 @@ import java.util.Calendar;
  *
  * @author BjørnTore
  */
-public class ChatMainFrame extends javax.swing.JFrame {
-
+public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeListener{
+    private PropertyChangeSupport chatMainFramePCS;
     /**
      * Creates new form ChatMainFrame
      */
     public ChatMainFrame() {
+        chatMainFramePCS = new PropertyChangeSupport(this);
         initComponents();
     }
 
@@ -171,12 +175,16 @@ public class ChatMainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void writeOutput(String output) {
+    public void writeOutput(String output, User user) {
+        if(user == null){
+            user = new User("Server");
+        }
+        
         if (!output.trim().equals("")) {
             if (jTextArea1.getText().equals("")) {
-                jTextArea1.setText(getTimeStamp() + output);
+                jTextArea1.setText(getTimeStamp() + user.getName() + ":  " + output);
             } else {
-                jTextArea1.setText(jTextArea1.getText() + "\n" + getTimeStamp() + output);
+                jTextArea1.setText(jTextArea1.getText() + "\n" + getTimeStamp() + user.getName() + ":  " + output);
             }
         }
     }
@@ -197,14 +205,22 @@ public class ChatMainFrame extends javax.swing.JFrame {
         return "  [" + hours + ":" + minutes + "]  ";
     }
 
+    private void sendMessage(String signal,String messageText, String chatroomOrUser){
+        switch(signal){
+            case "SEND_TO_SERVER":
+                chatMainFramePCS.firePropertyChange("SEND_TO_SERVER", chatroomOrUser, messageText);
+                break;
+        }        
+    }
+    
     private void jButton1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseReleased
-        writeOutput(jTextField1.getText());
+        sendMessage("SEND_TO_SERVER",jTextField1.getText(),"DEFAULT");
         jTextField1.setText("");
     }//GEN-LAST:event_jButton1MouseReleased
 
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-        writeOutput(jTextField1.getText());
+        sendMessage("SEND_TO_SERVER",jTextField1.getText(),"DEFAULT");
         jTextField1.setText("");
         }
     }//GEN-LAST:event_jTextField1KeyPressed
@@ -217,4 +233,13 @@ public class ChatMainFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        
+    }
+    
+    public void addPropertyChangeListener(PropertyChangeListener PCL) {
+        chatMainFramePCS.addPropertyChangeListener(PCL);
+    }
 }

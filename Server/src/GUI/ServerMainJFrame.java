@@ -62,6 +62,7 @@ public class ServerMainJFrame extends javax.swing.JFrame {
         setBackground(new java.awt.Color(244, 244, 244));
 
         jTextArea2.setColumns(20);
+        jTextArea2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextArea2.setLineWrap(true);
         jTextArea2.setRows(5);
         jTextArea2.setWrapStyleWord(true);

@@ -25,12 +25,14 @@ public class Server {
     ArrayList<ObjectOutputStream> listOfOutStreams = new ArrayList<>();
     ArrayList<DataInputStream> listOfInStreams = new ArrayList<>();
     ServerMainJFrame mainJFrame = new ServerMainJFrame();
+    User serverUser = new User("Server");
 
-    public Server() {              
+    public Server() {
         chatrooms.add(new ServerChatroom("CHATROOM1")); //for testing
         class ConnectionHandler implements Runnable {
+
             Socket clientSocket;
-            
+
             public ConnectionHandler(Socket clientSocket) {
                 this.clientSocket = clientSocket;
             }
@@ -39,26 +41,39 @@ public class Server {
             public void run() {
                 try {
                     OutputStream os = clientSocket.getOutputStream();
-                    ObjectOutputStream oos = new ObjectOutputStream(os);                   
+                    ObjectOutputStream oos = new ObjectOutputStream(os);
                     InputStream is = clientSocket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
-                    
-                    while (true) {
-                        Message msg = (Message)ois.readObject();
 
-                        if (msg.getSignal().equalsIgnoreCase("CONNECT")) {
-                            mainJFrame.writeOutput("User " + msg.getFromUser().getName() + " (" + clientSocket.getInetAddress().toString().substring(1) + ") connected");
-                            listOfOutStreams.add(oos);
-                            User tempUser  = msg.getFromUser();
-                            tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
-                            usersConnected.add(tempUser);
-                            sendUsersConnectedToAll();                     
-                        }
-                        if (msg.getSignal().equalsIgnoreCase("JOIN")) {
-                            findServerChatroom(msg.getChatroom()).addUserToServerChatroom(oos);
-                        }
-                        if (msg.getSignal().equalsIgnoreCase("SEND_TO_CHATROOM")) {
-                            findServerChatroom(msg.getChatroom()).writeToServerChatroom(msg);
+                    while (true) {
+                        Message msg = (Message) ois.readObject();
+
+
+                        switch (msg.getSignal()) {
+                            case "CONNECT":
+                                mainJFrame.writeOutput("User " + msg.getFromUser().getName() + " (" + clientSocket.getInetAddress().toString().substring(1) + ") connected");
+                                listOfOutStreams.add(oos);
+                                User tempUser = msg.getFromUser();
+                                tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
+                                usersConnected.add(tempUser);
+                                sendUsersConnectedToAll();
+                                break;
+
+                            case "JOIN":
+                                findServerChatroom(msg.getChatroom()).addUserToServerChatroom(oos);
+                                break;
+
+                            case "SEND_TO_CHATROOM":
+                                findServerChatroom(msg.getChatroom()).writeToServerChatroom(msg);
+                                break;
+
+                            case "SEND_TO_SERVER":
+                                mainJFrame.writeOutput(msg.getFromUser().getName() + ": " + msg.getMessage());
+                                sendMessage("SERVER_MESSAGE",msg.getMessage()+"", "DEFAULT", msg.getFromUser());
+                                break;
+
+                            default:
+                                break;
                         }
                     }
                 } catch (Exception ex) {
@@ -92,23 +107,33 @@ public class Server {
         }
         return null;
     }
-    
-    public void sendUsersConnectedToAll(){
+
+    public void sendUsersConnectedToAll() {
         ArrayList<User> tempUserList = new ArrayList<>();
         for (User user : usersConnected) {
-                tempUserList.add(user);       
+            tempUserList.add(user);
         }
-        
+
         for (ObjectOutputStream outputstream : listOfOutStreams) {
             try {
-                Message msg= new Message("CONNECTED_USERS", tempUserList); 
-                outputstream.writeObject(msg);                
-               
+                Message msg = new Message("CONNECTED_USERS", tempUserList);
+                outputstream.writeObject(msg);
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-         
+    }
+
+    public void sendMessage(String signal, String messageText, String chatroom, User user) {
+        for (ObjectOutputStream outputstream : listOfOutStreams) {
+            try {
+                outputstream.writeObject(new Message(signal, messageText, chatroom, user));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) {

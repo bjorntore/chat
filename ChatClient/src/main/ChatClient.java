@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Random;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,15 +24,19 @@ public class ChatClient implements PropertyChangeListener {
     private ServerConnection serverConnection;
     private String ip;
     private int port;
+    private User user;
+    private static ChatClient chatClient;
 
     public ChatClient(String ip, int port, String username) throws ClassNotFoundException {
         this.ip = ip;
         this.port = port;
-        chatMainFrame = new ChatMainFrame();
-        chatMainFrame.setVisible(true);
-        Random random = new Random();
+        this.user = new User(username);
 
-        Message connectionMessage = new Message("CONNECT", new User(username + random.nextInt(1000000)));
+        chatMainFrame = new ChatMainFrame();
+        chatMainFrame.addPropertyChangeListener(this);
+        chatMainFrame.setVisible(true);
+
+        Message connectionMessage = new Message("CONNECT", user);
         serverConnection = new ServerConnection();
         serverConnection.addPropertyChangeListener(this);
         serverConnection.connect(ip, port);
@@ -39,22 +44,42 @@ public class ChatClient implements PropertyChangeListener {
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-        new ChatClient("localhost", 10823, "Leif");
+        String nickname = null;
+        try {
+            nickname = JOptionPane.showInputDialog("Please enter a nickname");
+            while ((nickname.trim()).equals("")) {
+                nickname = JOptionPane.showInputDialog("Please enter a nickname, it's required");
+            }
+        } catch (NullPointerException ex) {
+            System.exit(0);
+        }
+        
+        chatClient = new ChatClient("31.45.22.215", 10823, nickname);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent pce) {
         switch (pce.getPropertyName()) {
+            //SERVER
             case "CONNECTED_USERS":
                 chatMainFrame.refreshUserList((ArrayList<User>) pce.getNewValue());
                 break;
             case "SERVER_CONNECTION_FAILED":
-                chatMainFrame.writeOutput((String) pce.getNewValue());
+                chatMainFrame.writeOutput(pce.getNewValue() + "", null);
                 break;
             case "SERVER_CONNECTION_LOST":
-                chatMainFrame.writeOutput((String) pce.getNewValue());
+                chatMainFrame.writeOutput(pce.getNewValue() + "", null);
                 serverConnection.destroySocket();
                 serverConnection.connect(ip, port);
+                break;
+
+            case "SERVER_MESSAGE":
+                chatMainFrame.writeOutput((((Message) pce.getNewValue()).getMessage()) + "", ((Message) pce.getNewValue()).getFromUser());
+                break;
+
+            //GUI   
+            case "SEND_TO_SERVER":
+                serverConnection.sendMessage("SEND_TO_SERVER", pce.getNewValue() + "", pce.getOldValue() + "", user);
                 break;
         }
     }
