@@ -140,20 +140,23 @@ public class Server {
     }
 
     public void aliveCheck() {
-        for (User user : usersConnected) {
-            if (user.getFailedAliveChecks() < 2) {
-                try {
-                    user.incrementCheckFailed();
-                    user.getOos().writeObject(new Message("ALIVE_CHECK"));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+        synchronized (usersConnected) {
+            Iterator it = usersConnected.iterator();
+            while (it.hasNext()) {
+                User tmpUser = (User) it.next();
+                if (tmpUser.getFailedAliveChecks() < 2) {
+                    try {
+                        tmpUser.incrementCheckFailed();
+                        tmpUser.getOos().writeObject(new Message("ALIVE_CHECK"));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    mainJFrame.writeOutput(tmpUser.getName() + " diconnected");
+                    sendMessage("SERVER_MESSAGE", tmpUser.getName() + " diconnected", "DEFAULT", serverUser);
+                    usersConnected.remove(tmpUser);
+                    tmpUser = null;
                 }
-            } else {
-                mainJFrame.writeOutput(user.getName() + " diconnected");
-                sendMessage("SERVER_MESSAGE", user.getName() + " diconnected", "DEFAULT", serverUser);
-
-                usersConnected.remove(user);
-                user = null;
             }
         }
     }
@@ -187,7 +190,7 @@ public class Server {
                     User tmpUser = (User) it.next();
                     tmpUser.getOos().writeObject(msg);
                 } catch (IOException ex) {
-                     ex.printStackTrace();
+                    ex.printStackTrace();
                 }
             }
         }
