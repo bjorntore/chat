@@ -58,6 +58,7 @@ public class ChatClient implements PropertyChangeListener {
         }
 
         chatClient = new ChatClient("localhost", 10823, nickname);
+        //  BT: 31.45.22.215
     }
 
     @Override
