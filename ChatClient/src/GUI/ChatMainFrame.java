@@ -16,6 +16,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -24,7 +25,7 @@ import java.util.Calendar;
 public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeListener {
 
     private PropertyChangeSupport chatMainFramePCS;
-    private ArrayList<UserPanel> userPanels = new ArrayList<>();
+    private CopyOnWriteArrayList<UserPanel> userPanels = new CopyOnWriteArrayList<>();
 
     /**
      * Creates new form ChatMainFrame
@@ -35,8 +36,10 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         jPanel2.setLayout(new GridLayout(10, 1, 0, 2));
     }
 
-    public void refreshUserList(ArrayList<User> refreshedListOfUsers) {
+    public void refreshUserList(CopyOnWriteArrayList<User> refreshedListOfUsers) {
+        
         //Add UserPanel for new users
+        writeOutput("Mottatt: " + refreshedListOfUsers.size(), new User("LOL OMG"));
         boolean somethingChanged = false;
         for (User user : refreshedListOfUsers) {
             boolean wasFound = false;
@@ -62,16 +65,24 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
             }
             if (!wasFound) {
                 for (int i = 0; i < userPanels.size(); i++) {
-                    if (((UserPanel) jPanel2.getComponent(i)).getUser().getName().equalsIgnoreCase(userPanel.getUser().getName())) {
-                        jPanel2.remove(i);
-                        userPanels.remove(userPanel);
-                        userPanel = null;
-                        somethingChanged = true;
+                    try {
+                        if (((UserPanel) jPanel2.getComponent(i)).getUser().getName().equalsIgnoreCase(userPanel.getUser().getName())) {
+                            jPanel2.remove(i);
+                            userPanels.remove(userPanel);
+                            userPanel = null;
+                            somethingChanged = true;
+                        }
+                    } catch(NullPointerException ex){
+                        System.out.println("nullPointer i GUI refreshListOfUsers remove user");
                     }
                 }
             }
         }
         if (somethingChanged) {
+             if(userPanels.size() != refreshedListOfUsers.size()){
+                 jPanel2.removeAll();
+                 refreshUserList(refreshedListOfUsers);
+             }
             jPanel2.validate();
         }
     }

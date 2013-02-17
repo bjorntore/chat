@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JOptionPane;
 
 /**
@@ -65,8 +66,8 @@ public class ChatClient implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent pce) {
         switch (pce.getPropertyName()) {
             //SERVER
-            case "CONNECTED_USERS":
-                chatMainFrame.refreshUserList((ArrayList<User>) pce.getNewValue());
+            case "CONNECTED_USERS":                
+                chatMainFrame.refreshUserList((CopyOnWriteArrayList<User>) pce.getNewValue());
                 break;
             case "SERVER_CONNECTION_FAILED":
                 chatMainFrame.writeOutput(pce.getNewValue() + "", null);

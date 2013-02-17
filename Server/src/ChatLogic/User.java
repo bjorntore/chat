@@ -31,7 +31,7 @@ public class User implements Serializable {
         this.failedAliveChecks = failedAliveChecks;
     }
     
-    public void incrementCheckFailed(){
+    public synchronized void incrementCheckFailed(){
         failedAliveChecks++;
     }
    

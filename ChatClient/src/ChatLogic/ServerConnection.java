@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -113,7 +114,11 @@ public class ServerConnection implements PropertyChangeListener {
                     
                     switch(tempMsg.getSignal()){
                         case "CONNECTED_USERS":
-                            serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempMsg.getConnectedUsers());
+                            CopyOnWriteArrayList<User> tempList = new CopyOnWriteArrayList<>();
+                            for (User tmpUser : tempMsg.getConnectedUsers()) {
+                                tempList.add(tmpUser);
+                            }
+                            serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempList);
                             break;
                         case "SERVER_MESSAGE":
                             serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempMsg);

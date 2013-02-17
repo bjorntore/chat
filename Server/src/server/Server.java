@@ -16,13 +16,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server {
 
     ArrayList<ServerChatroom> chatrooms = new ArrayList<>();
-    static List<User> usersConnected = Collections.synchronizedList(new ArrayList());
+    CopyOnWriteArrayList<User> usersConnected = new CopyOnWriteArrayList<>();
     ArrayList<Thread> listOfThreads = new ArrayList<>();
     ServerMainJFrame mainJFrame = new ServerMainJFrame();
     User serverUser = new User("Server");
@@ -126,7 +127,7 @@ public class Server {
     class UpdateClients implements Runnable {
 
         @Override
-        public void run() {
+        public synchronized void run() {
             while (true) {
                 aliveCheck();
                 updateClientChatroomList();
@@ -140,23 +141,20 @@ public class Server {
     }
 
     public void aliveCheck() {
-        synchronized (usersConnected) {
-            Iterator it = usersConnected.iterator();
-            while (it.hasNext()) {
-                User tmpUser = (User) it.next();
-                if (tmpUser.getFailedAliveChecks() < 2) {
-                    try {
-                        tmpUser.incrementCheckFailed();
-                        tmpUser.getOos().writeObject(new Message("ALIVE_CHECK"));
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    mainJFrame.writeOutput(tmpUser.getName() + " diconnected");
-                    sendMessage("SERVER_MESSAGE", tmpUser.getName() + " diconnected", "DEFAULT", serverUser);
-                    usersConnected.remove(tmpUser);
-                    tmpUser = null;
+        Iterator<User> it = usersConnected.iterator();
+        while (it.hasNext()) {
+            User tmpUser = it.next();
+            if (tmpUser.getFailedAliveChecks() < 2) {
+                try {
+                    tmpUser.incrementCheckFailed();
+                    tmpUser.getOos().writeObject(new Message("ALIVE_CHECK"));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+            } else {
+                mainJFrame.writeOutput(tmpUser.getName() + " diconnected");
+                sendMessage("SERVER_MESSAGE", tmpUser.getName() + " diconnected", "DEFAULT", serverUser);
+                usersConnected.remove(tmpUser);
             }
         }
     }
@@ -173,27 +171,25 @@ public class Server {
     }
 
     public void sendUsersConnectedToAll() {
-        ArrayList<User> tempUserList = new ArrayList<>();
+        ArrayList<User> tempUserList = new ArrayList<User>();
 
-        synchronized (usersConnected) {
-            Iterator it = usersConnected.iterator();
-            while (it.hasNext()) {
-                tempUserList.add((User) it.next());
+        Iterator<User> it = usersConnected.iterator();
+        while (it.hasNext()) {
+            tempUserList.add((User) it.next());
+        }
+
+
+        it = usersConnected.iterator();
+        while (it.hasNext()) {
+            try {
+                Message msg = new Message("CONNECTED_USERS", tempUserList);
+                User tmpUser = it.next();
+                tmpUser.getOos().writeObject(msg);
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
 
-        synchronized (usersConnected) {
-            Iterator it = usersConnected.iterator();
-            while (it.hasNext()) {
-                try {
-                    Message msg = new Message("CONNECTED_USERS", tempUserList);
-                    User tmpUser = (User) it.next();
-                    tmpUser.getOos().writeObject(msg);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
     }
 
     public void sendMessage(String signal, String messageText, String chatroom, User FromUser) {
