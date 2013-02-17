@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
 
@@ -25,8 +27,8 @@ public class Server {
 
             Socket clientSocket;
 
-            public ConnectionHandler(Socket clientSocket) {
-                this.clientSocket = clientSocket;
+            public ConnectionHandler(User user) {
+                clientSocket = user.getSocket();
             }
 
             @Override
@@ -38,9 +40,8 @@ public class Server {
                     ObjectInputStream ois = new ObjectInputStream(is);
 
                     while (true) {
+                       if(clientSocket==null) break;
                         Message msg = (Message) ois.readObject();
-
-
                         switch (msg.getSignal()) {
                             case "CONNECT":
                                 mainJFrame.writeOutput("User " + msg.getFromUser().getName() + " (" + clientSocket.getInetAddress().toString().substring(1) + ") connected");
@@ -99,7 +100,10 @@ public class Server {
             refreshThread.start();
             while (true) {
                 if (serverSocket.isBound()) {
-                    listOfThreads.add(new Thread(new ConnectionHandler(serverSocket.accept())));
+                    User user = new User("");
+                    user.setSocket(serverSocket.accept());
+
+                    listOfThreads.add(new Thread(new ConnectionHandler(user)));
                     listOfThreads.get(listOfThreads.size() - 1).start();
 
                 }
@@ -114,11 +118,10 @@ public class Server {
 
         @Override
         public void run() {
-            ArrayList tempList = new ArrayList();
             while (true) {
-                sendUsersConnectedToAll();
-                updateClientChatroomList();
                 aliveCheck();
+                updateClientChatroomList();
+                sendUsersConnectedToAll();
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException ex) {
@@ -140,8 +143,15 @@ public class Server {
                 }
             } else {
                 sendMessage("SERVER_MESSAGE", user.getName() + " diconnected", "DEFAULT", serverUser);
-                usersConnected.remove(user);
-                user = null;
+                try {
+
+                    user.getSocket().close();
+                    usersConnected.remove(user);
+                    user = null;
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
             }
 
         }

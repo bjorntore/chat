@@ -2,6 +2,7 @@ package ChatLogic;
 
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Socket;
 
 /**
  *
@@ -12,6 +13,15 @@ public class User implements Serializable {
     private String name, signature,IP;
     private transient ObjectOutputStream oos;
     private int failedAliveChecks = 0;
+    private transient Socket socket;
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
 
     public int getFailedAliveChecks() {
         return failedAliveChecks;
