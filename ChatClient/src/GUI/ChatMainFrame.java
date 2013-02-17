@@ -6,6 +6,7 @@ package GUI;
 
 import ChatLogic.User;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 //import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import java.awt.GridLayout;
@@ -21,7 +22,7 @@ import java.util.Calendar;
  * @author BjørnTore
  */
 public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeListener {
-    
+
     private PropertyChangeSupport chatMainFramePCS;
     private ArrayList<UserPanel> userPanels = new ArrayList<>();
 
@@ -36,6 +37,7 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
 
     public void refreshUserList(ArrayList<User> refreshedListOfUsers) {
         //Add UserPanel for new users
+        System.out.println("refreshedListOfUsers");
         boolean somethingChanged = false;
         for (User user : refreshedListOfUsers) {
             boolean wasFound = false;
@@ -54,16 +56,26 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         //Remove UserPanels for disconnected users
         for (UserPanel userPanel : userPanels) {
             boolean wasFound = false;
+            System.out.println("Sjekker om " + userPanel.getUser().getName() + " skal drepes");
             for (User user : refreshedListOfUsers) {
                 if (user.getName().equalsIgnoreCase(userPanel.getUser().getName())) {
                     wasFound = true;
+                    System.out.println(user.getName() + " ble funnet");
                 }
             }
             if (!wasFound) {
-                jPanel2.remove(userPanel);
-                userPanels.remove(userPanel);
-                userPanel = null;
-                somethingChanged = true;
+                System.out.println(userPanel.getUser().getName() + " blir fjernet");
+
+                for (int i = 0; i < userPanels.size(); i++) {
+                    if (((UserPanel) jPanel2.getComponent(i)).getUser().getName().equalsIgnoreCase(userPanel.getUser().getName())) {
+                        jPanel2.remove(i);
+                        userPanels.remove(userPanel);
+                       // userPanel.validate();
+                       // userPanel.repaint();
+                        userPanel = null;
+                        somethingChanged = true;
+                    }
+                }
             }
         }
         if (somethingChanged) {
@@ -248,9 +260,9 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
 
     public void writeOutput(String output, User user) {
         if (user == null) {
-            user = new User("Server");
+            user = new User("Client");
         }
-        
+
         if (!output.trim().equals("")) {
             if (jTextArea1.getText().equals("")) {
                 jTextArea1.setText(getTimeStamp() + user.getName() + ":  " + output);
@@ -259,7 +271,7 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
             }
         }
     }
-    
+
     private String getTimeStamp() {
         String hours;
         String minutes;
@@ -275,7 +287,7 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         }
         return "  [" + hours + ":" + minutes + "]  ";
     }
-    
+
     private void sendMessage(String signal, String messageText, String chatroomOrUser) {
         switch (signal) {
             case "SEND_TO_SERVER":
@@ -283,19 +295,19 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
                 break;
         }
     }
-    
+
     private void jButton1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseReleased
         sendMessage("SEND_TO_SERVER", jTextField1.getText(), "DEFAULT");
         jTextField1.setText("");
     }//GEN-LAST:event_jButton1MouseReleased
-    
+
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             sendMessage("SEND_TO_SERVER", jTextField1.getText(), "DEFAULT");
             jTextField1.setText("");
         }
     }//GEN-LAST:event_jTextField1KeyPressed
-    
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -314,7 +326,7 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
     }
-    
+
     public void addPropertyChangeListener(PropertyChangeListener PCL) {
         chatMainFramePCS.addPropertyChangeListener(PCL);
     }

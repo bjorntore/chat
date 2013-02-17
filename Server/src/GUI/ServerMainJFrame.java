@@ -21,10 +21,12 @@ public class ServerMainJFrame extends javax.swing.JFrame {
     }
 
     public void writeOutput(String output) {
+        if(!(output.trim()).equals("")){
         if (jTextArea2.getText().equals("")) {
             jTextArea2.setText(getTimeStamp() + output);
         } else {
             jTextArea2.setText(jTextArea2.getText() + "\n" + getTimeStamp() + output);
+        }
         }
     }
     

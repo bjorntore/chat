@@ -3,6 +3,8 @@ package server;
 import ChatLogic.Message;
 import ChatLogic.User;
 import GUI.ServerMainJFrame;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -17,7 +19,7 @@ import java.util.logging.Logger;
 public class Server {
 
     ArrayList<ServerChatroom> chatrooms = new ArrayList<>();
-    public static ArrayList<User> usersConnected = new ArrayList<>();
+    static ArrayList<User> usersConnected = new ArrayList<>();
     ArrayList<Thread> listOfThreads = new ArrayList<>();
     ServerMainJFrame mainJFrame = new ServerMainJFrame();
     User serverUser = new User("Server");
@@ -35,12 +37,16 @@ public class Server {
             public void run() {
                 try {
                     OutputStream os = clientSocket.getOutputStream();
+                    //BufferedOutputStream bos = new BufferedOutputStream(os);
                     ObjectOutputStream oos = new ObjectOutputStream(os);
                     InputStream is = clientSocket.getInputStream();
-                    ObjectInputStream ois = new ObjectInputStream(is);
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    ObjectInputStream ois = new ObjectInputStream(bis);
 
                     while (true) {
-                       if(clientSocket==null) break;
+                        if (clientSocket == null) {
+                            break;
+                        }
                         Message msg = (Message) ois.readObject();
                         switch (msg.getSignal()) {
                             case "CONNECT":
@@ -131,29 +137,22 @@ public class Server {
     }
 
     public void aliveCheck() {
-        if (usersConnected.isEmpty()) {
-            return;
-        }
         for (User user : usersConnected) {
             if (user.getFailedAliveChecks() < 2) {
                 try {
+                    mainJFrame.writeOutput(user.getName() + " alive checks failed: " + user.getFailedAliveChecks());
+                    user.incrementCheckFailed();
                     user.getOos().writeObject(new Message("ALIVE_CHECK"));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else {
+                mainJFrame.writeOutput(user.getName() + " diconnected");
                 sendMessage("SERVER_MESSAGE", user.getName() + " diconnected", "DEFAULT", serverUser);
-                try {
 
-                    user.getSocket().close();
-                    usersConnected.remove(user);
-                    user = null;
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-
+                usersConnected.remove(user);
+                user = null;
             }
-
         }
     }
 
@@ -169,9 +168,6 @@ public class Server {
     }
 
     public void sendUsersConnectedToAll() {
-        if (usersConnected.isEmpty()) {
-            return;
-        }
         ArrayList<User> tempUserList = new ArrayList<>();
         for (User user : usersConnected) {
             tempUserList.add(user);
@@ -192,7 +188,7 @@ public class Server {
     public void sendMessage(String signal, String messageText, String chatroom, User FromUser) {
         for (User user : usersConnected) {
             try {
-                user.getOos().writeObject(new Message(signal, messageText, chatroom, user));
+                user.getOos().writeObject(new Message(signal, messageText, chatroom, FromUser));
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -205,9 +201,6 @@ public class Server {
     }
 
     public void updateClientChatroomList() {
-        if (usersConnected.isEmpty()) {
-            return;
-        }
         ArrayList tempList = new ArrayList();
         for (User user : usersConnected) {
             try {
