@@ -13,13 +13,16 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server {
 
     ArrayList<ServerChatroom> chatrooms = new ArrayList<>();
-    static ArrayList<User> usersConnected = new ArrayList<>();
+    static List<User> usersConnected = Collections.synchronizedList(new ArrayList());
     ArrayList<Thread> listOfThreads = new ArrayList<>();
     ServerMainJFrame mainJFrame = new ServerMainJFrame();
     User serverUser = new User("Server");
@@ -140,7 +143,6 @@ public class Server {
         for (User user : usersConnected) {
             if (user.getFailedAliveChecks() < 2) {
                 try {
-                    mainJFrame.writeOutput(user.getName() + " alive checks failed: " + user.getFailedAliveChecks());
                     user.incrementCheckFailed();
                     user.getOos().writeObject(new Message("ALIVE_CHECK"));
                 } catch (Exception ex) {
@@ -169,18 +171,24 @@ public class Server {
 
     public void sendUsersConnectedToAll() {
         ArrayList<User> tempUserList = new ArrayList<>();
-        for (User user : usersConnected) {
-            tempUserList.add(user);
+
+        synchronized (usersConnected) {
+            Iterator it = usersConnected.iterator();
+            while (it.hasNext()) {
+                tempUserList.add((User) it.next());
+            }
         }
 
-        for (User user : usersConnected) {
-            try {
-                Message msg = new Message("CONNECTED_USERS", tempUserList);
-                user.getOos().writeObject(msg);
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-
+        synchronized (usersConnected) {
+            Iterator it = usersConnected.iterator();
+            while (it.hasNext()) {
+                try {
+                    Message msg = new Message("CONNECTED_USERS", tempUserList);
+                    User tmpUser = (User) it.next();
+                    tmpUser.getOos().writeObject(msg);
+                } catch (IOException ex) {
+                     ex.printStackTrace();
+                }
             }
         }
     }
