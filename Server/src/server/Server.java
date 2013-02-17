@@ -3,7 +3,6 @@ package server;
 import ChatLogic.Message;
 import ChatLogic.User;
 import GUI.ServerMainJFrame;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -12,18 +11,13 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
+
 
 public class Server {
 
     ArrayList<ServerChatroom> chatrooms = new ArrayList<>();
     public static ArrayList<User> usersConnected = new ArrayList<>();
-    ArrayList<Socket> listOfSockets = new ArrayList<>();
     ArrayList<Thread> listOfThreads = new ArrayList<>();
-    ArrayList<ObjectOutputStream> listOfOutStreams = new ArrayList<>();
-    ArrayList<DataInputStream> listOfInStreams = new ArrayList<>();
     ServerMainJFrame mainJFrame = new ServerMainJFrame();
     User serverUser = new User("Server");
 
@@ -51,8 +45,8 @@ public class Server {
                         switch (msg.getSignal()) {
                             case "CONNECT":
                                 mainJFrame.writeOutput("User " + msg.getFromUser().getName() + " (" + clientSocket.getInetAddress().toString().substring(1) + ") connected");
-                                listOfOutStreams.add(oos);
                                 User tempUser = msg.getFromUser();
+                                tempUser.setOos(oos);
                                 tempUser.setIP(clientSocket.getInetAddress().toString().substring(1));
                                 usersConnected.add(tempUser);
                                 sendUsersConnectedToAll();
@@ -79,9 +73,7 @@ public class Server {
                                 mainJFrame.writeOutput(msg.getFromUser().getName() + ": " + msg.getMessage());
                                 sendMessage("SERVER_MESSAGE", msg.getMessage() + "", "DEFAULT", msg.getFromUser());
                                 break;
-
-
-
+                            
                             default:
                                 break;
                         }
@@ -100,8 +92,7 @@ public class Server {
             refreshThread.start();
             while (true) {
                 if (serverSocket.isBound()) {
-                    listOfSockets.add(serverSocket.accept());
-                    listOfThreads.add(new Thread(new ConnectionHandler(listOfSockets.get(listOfSockets.size() - 1))));
+                    listOfThreads.add(new Thread(new ConnectionHandler(serverSocket.accept())));
                     listOfThreads.get(listOfThreads.size() - 1).start();
                     
                 }
@@ -145,26 +136,27 @@ public class Server {
 
     public void sendUsersConnectedToAll() {
        if(usersConnected.isEmpty()) return;
-        ArrayList<User> tempUserList = new ArrayList<>();
+       ArrayList<User> tempUserList = new ArrayList<>();
         for (User user : usersConnected) {
             tempUserList.add(user);
         }
 
-        for (ObjectOutputStream outputstream : listOfOutStreams) {
+        for (User user : usersConnected) {
             try {
                 Message msg = new Message("CONNECTED_USERS", tempUserList);
-                outputstream.writeObject(msg);
+                user.getOos().writeObject(msg);
 
             } catch (Exception ex) {
                 ex.printStackTrace();
+                
             }
         }
     }
 
-    public void sendMessage(String signal, String messageText, String chatroom, User user) {
-        for (ObjectOutputStream outputstream : listOfOutStreams) {
+    public void sendMessage(String signal, String messageText, String chatroom, User FromUser) {
+        for (User user : usersConnected) {
             try {
-                outputstream.writeObject(new Message(signal, messageText, chatroom, user));
+                user.getOos().writeObject(new Message(signal, messageText, chatroom, user));
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -179,12 +171,12 @@ public class Server {
     public void updateClientChatroomList() {
        if(usersConnected.isEmpty()) return;
         ArrayList tempList = new ArrayList();
-        for (ObjectOutputStream oos : listOfOutStreams) {
+        for (User user : usersConnected) {
             try {
                 for (ServerChatroom serverChatroom : chatrooms) {
                     tempList.add(serverChatroom);
                 }
-                oos.writeObject(new Message("REFRESH_CHATROOMLIST", tempList, ""));
+                user.getOos().writeObject(new Message("REFRESH_CHATROOMLIST", tempList, ""));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

@@ -10,8 +10,8 @@ import java.io.Serializable;
 public class User implements Serializable {
     private static final long serialVersionUID = 7526472295622776146L;  // unique id
     private String name, signature,IP;
-    private ObjectOutputStream oos;
-    private int timerout=0;
+    private transient ObjectOutputStream oos;
+   
     public ObjectOutputStream getOos() {
         return oos;
     }
