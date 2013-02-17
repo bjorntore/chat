@@ -37,7 +37,6 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
 
     public void refreshUserList(ArrayList<User> refreshedListOfUsers) {
         //Add UserPanel for new users
-        System.out.println("refreshedListOfUsers");
         boolean somethingChanged = false;
         for (User user : refreshedListOfUsers) {
             boolean wasFound = false;
@@ -56,22 +55,16 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         //Remove UserPanels for disconnected users
         for (UserPanel userPanel : userPanels) {
             boolean wasFound = false;
-            System.out.println("Sjekker om " + userPanel.getUser().getName() + " skal drepes");
             for (User user : refreshedListOfUsers) {
                 if (user.getName().equalsIgnoreCase(userPanel.getUser().getName())) {
                     wasFound = true;
-                    System.out.println(user.getName() + " ble funnet");
                 }
             }
             if (!wasFound) {
-                System.out.println(userPanel.getUser().getName() + " blir fjernet");
-
                 for (int i = 0; i < userPanels.size(); i++) {
                     if (((UserPanel) jPanel2.getComponent(i)).getUser().getName().equalsIgnoreCase(userPanel.getUser().getName())) {
                         jPanel2.remove(i);
                         userPanels.remove(userPanel);
-                       // userPanel.validate();
-                       // userPanel.repaint();
                         userPanel = null;
                         somethingChanged = true;
                     }
