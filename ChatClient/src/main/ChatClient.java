@@ -42,7 +42,7 @@ public class ChatClient implements PropertyChangeListener {
         serverConnection.connect(ip, port);
         serverConnection.sendMessage(connectionMessage);
        // serverConnection.sendMessage(new Message("CREATE_PUBLIC_CHATROOM","TEST", user));
-        serverConnection.sendMessage(new Message("JOIN", "TEST", user));
+        //serverConnection.sendMessage(new Message("JOIN", "TEST", user));
         
     }
 
