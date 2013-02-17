@@ -5,6 +5,7 @@
 package GUI;
 
 import ChatLogic.User;
+import java.awt.Color;
 import java.awt.Font;
 //import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import java.awt.GridLayout;
@@ -19,26 +20,55 @@ import java.util.Calendar;
  *
  * @author BjørnTore
  */
-public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeListener{
+public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeListener {
+    
     private PropertyChangeSupport chatMainFramePCS;
+    private ArrayList<UserPanel> userPanels = new ArrayList<>();
+
     /**
      * Creates new form ChatMainFrame
      */
     public ChatMainFrame() {
         chatMainFramePCS = new PropertyChangeSupport(this);
         initComponents();
+        jPanel2.setLayout(new GridLayout(10, 1, 0, 2));
     }
 
     public void refreshUserList(ArrayList<User> refreshedListOfUsers) {
-        jPanel2.removeAll();
-        jPanel2.setLayout(new GridLayout(10, 1, 0, 2));
-
-        UserPanel userPanel;
+        //Add UserPanel for new users
+        boolean somethingChanged = false;
         for (User user : refreshedListOfUsers) {
-            userPanel = new UserPanel(user);
-            jPanel2.add(userPanel);
+            boolean wasFound = false;
+            for (UserPanel userPanel : userPanels) {
+                if (userPanel.getUser().getName().equalsIgnoreCase(user.getName())) {
+                    wasFound = true;
+                }
+            }
+            if (!wasFound) {
+                jPanel2.add(new UserPanel(user));
+                userPanels.add(new UserPanel(user));
+                somethingChanged = true;
+            }
         }
-        jPanel2.validate();
+
+        //Remove UserPanels for disconnected users
+        for (UserPanel userPanel : userPanels) {
+            boolean wasFound = false;
+            for (User user : refreshedListOfUsers) {
+                if (user.getName().equalsIgnoreCase(userPanel.getUser().getName())) {
+                    wasFound = true;
+                }
+            }
+            if (!wasFound) {
+                jPanel2.remove(userPanel);
+                userPanels.remove(userPanel);
+                userPanel = null;
+                somethingChanged = true;
+            }
+        }
+        if (somethingChanged) {
+            jPanel2.validate();
+        }
     }
 
     /**
@@ -61,6 +91,8 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         //IAppWidgetFactory.makeIAppScrollPane(jScrollPane2);
         jScrollPane2.getVerticalScrollBar().setUnitIncrement(13);
         jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ChatClient");
@@ -129,18 +161,54 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
 
         jScrollPane2.setViewportView(jPanel2);
 
+        jPanel3.setBackground(new java.awt.Color(244, 244, 244));
+
+        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(255, 51, 51));
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/chatroom_normal.png"))); // NOI18N
+        jButton2.setToolTipText("Conversations");
+        jButton2.setBorder(null);
+        jButton2.setBorderPainted(false);
+        jButton2.setContentAreaFilled(false);
+        jButton2.setFocusable(false);
+        jButton2.setName("conversationsButton"); // NOI18N
+        jButton2.setRequestFocusEnabled(false);
+        jButton2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/chatroom_rollover.png"))); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 878, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 878, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -149,12 +217,15 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(11, 11, 11)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(11, 11, 11))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -176,7 +247,7 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
     }// </editor-fold>//GEN-END:initComponents
 
     public void writeOutput(String output, User user) {
-        if(user == null){
+        if (user == null) {
             user = new User("Server");
         }
         
@@ -188,7 +259,7 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
             }
         }
     }
-
+    
     private String getTimeStamp() {
         String hours;
         String minutes;
@@ -204,30 +275,36 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         }
         return "  [" + hours + ":" + minutes + "]  ";
     }
-
-    private void sendMessage(String signal,String messageText, String chatroomOrUser){
-        switch(signal){
+    
+    private void sendMessage(String signal, String messageText, String chatroomOrUser) {
+        switch (signal) {
             case "SEND_TO_SERVER":
                 chatMainFramePCS.firePropertyChange("SEND_TO_SERVER", chatroomOrUser, messageText);
                 break;
-        }        
+        }
     }
     
     private void jButton1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseReleased
-        sendMessage("SEND_TO_SERVER",jTextField1.getText(),"DEFAULT");
+        sendMessage("SEND_TO_SERVER", jTextField1.getText(), "DEFAULT");
         jTextField1.setText("");
     }//GEN-LAST:event_jButton1MouseReleased
-
+    
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-        sendMessage("SEND_TO_SERVER",jTextField1.getText(),"DEFAULT");
-        jTextField1.setText("");
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            sendMessage("SEND_TO_SERVER", jTextField1.getText(), "DEFAULT");
+            jTextField1.setText("");
         }
     }//GEN-LAST:event_jTextField1KeyPressed
+    
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
@@ -236,7 +313,6 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        
     }
     
     public void addPropertyChangeListener(PropertyChangeListener PCL) {

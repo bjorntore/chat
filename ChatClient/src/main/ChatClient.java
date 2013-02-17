@@ -41,9 +41,9 @@ public class ChatClient implements PropertyChangeListener {
         serverConnection.addPropertyChangeListener(this);
         serverConnection.connect(ip, port);
         serverConnection.sendMessage(connectionMessage);
-       // serverConnection.sendMessage(new Message("CREATE_PUBLIC_CHATROOM","TEST", user));
+        // serverConnection.sendMessage(new Message("CREATE_PUBLIC_CHATROOM","TEST", user));
         //serverConnection.sendMessage(new Message("JOIN", "TEST", user));
-        
+
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
@@ -56,7 +56,7 @@ public class ChatClient implements PropertyChangeListener {
         } catch (NullPointerException ex) {
             System.exit(0);
         }
-        
+
         chatClient = new ChatClient("localhost", 10823, nickname);
     }
 
@@ -78,6 +78,10 @@ public class ChatClient implements PropertyChangeListener {
 
             case "SERVER_MESSAGE":
                 chatMainFrame.writeOutput((((Message) pce.getNewValue()).getMessage()) + "", ((Message) pce.getNewValue()).getFromUser());
+                break;
+
+            case "ALIVE_CHECK":
+                serverConnection.sendMessage(new Message("PULSE_BEAT", user));
                 break;
 
             //GUI   

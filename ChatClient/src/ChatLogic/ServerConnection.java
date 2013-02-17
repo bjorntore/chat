@@ -120,7 +120,10 @@ public class ServerConnection implements PropertyChangeListener {
                             break;
                             
                         case "REFRESH_CHATROOMLIST":
-                            System.out.print("Mottar REFRESH_CHATROOMLIST");
+                            break;
+                            
+                        case "ALIVE_CHECK":                            
+                            serverConnectionPCS.firePropertyChange(tempMsg.getSignal(), null, tempMsg);                            
                             break;
                             
                         default:

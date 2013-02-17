@@ -12,7 +12,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-
 public class Server {
 
     ArrayList<ServerChatroom> chatrooms = new ArrayList<>();
@@ -52,6 +51,14 @@ public class Server {
                                 sendUsersConnectedToAll();
                                 break;
 
+                            case "PULSE_BEAT":
+                                for (User _user : usersConnected) {
+                                    if (_user.getName().equalsIgnoreCase(msg.getFromUser().getName())) {
+                                        _user.setFailedAliveChecks(0);
+                                    }
+                                }
+                                break;
+
                             case "JOIN":
                                 mainJFrame.writeOutput(msg.getFromUser() + " joinet chatroom: " + findServerChatroom(msg.getChatroom()).getName());
                                 findServerChatroom(msg.getChatroom()).addUserToServerChatroom(msg.getFromUser());
@@ -73,7 +80,7 @@ public class Server {
                                 mainJFrame.writeOutput(msg.getFromUser().getName() + ": " + msg.getMessage());
                                 sendMessage("SERVER_MESSAGE", msg.getMessage() + "", "DEFAULT", msg.getFromUser());
                                 break;
-                            
+
                             default:
                                 break;
                         }
@@ -88,19 +95,19 @@ public class Server {
 
         try {
             ServerSocket serverSocket = new ServerSocket(10823);
-            Thread refreshThread= new Thread(new UpdateClients());
+            Thread refreshThread = new Thread(new UpdateClients());
             refreshThread.start();
             while (true) {
                 if (serverSocket.isBound()) {
                     listOfThreads.add(new Thread(new ConnectionHandler(serverSocket.accept())));
                     listOfThreads.get(listOfThreads.size() - 1).start();
-                    
+
                 }
             }
         } catch (IOException ex) {
             System.err.println(ex);
         }
-         
+
     }
 
     class UpdateClients implements Runnable {
@@ -109,17 +116,34 @@ public class Server {
         public void run() {
             ArrayList tempList = new ArrayList();
             while (true) {
-                System.out.println("Prøver å update");
                 sendUsersConnectedToAll();
                 updateClientChatroomList();
-                System.out.println("Update done");
-               
+                aliveCheck();
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException ex) {
-                    
                 }
             }
+        }
+    }
+
+    public void aliveCheck() {
+        if (usersConnected.isEmpty()) {
+            return;
+        }
+        for (User user : usersConnected) {
+            if (user.getFailedAliveChecks() < 2) {
+                try {
+                    user.getOos().writeObject(new Message("ALIVE_CHECK"));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                sendMessage("SERVER_MESSAGE", user.getName() + " diconnected", "DEFAULT", serverUser);
+                usersConnected.remove(user);
+                user = null;
+            }
+
         }
     }
 
@@ -135,8 +159,10 @@ public class Server {
     }
 
     public void sendUsersConnectedToAll() {
-       if(usersConnected.isEmpty()) return;
-       ArrayList<User> tempUserList = new ArrayList<>();
+        if (usersConnected.isEmpty()) {
+            return;
+        }
+        ArrayList<User> tempUserList = new ArrayList<>();
         for (User user : usersConnected) {
             tempUserList.add(user);
         }
@@ -148,7 +174,7 @@ public class Server {
 
             } catch (Exception ex) {
                 ex.printStackTrace();
-                
+
             }
         }
     }
@@ -169,7 +195,9 @@ public class Server {
     }
 
     public void updateClientChatroomList() {
-       if(usersConnected.isEmpty()) return;
+        if (usersConnected.isEmpty()) {
+            return;
+        }
         ArrayList tempList = new ArrayList();
         for (User user : usersConnected) {
             try {

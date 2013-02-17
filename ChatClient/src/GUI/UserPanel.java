@@ -37,6 +37,14 @@ public class UserPanel extends javax.swing.JPanel {
         setVisible(true);
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
+    public User getUser(){
+        return user;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
