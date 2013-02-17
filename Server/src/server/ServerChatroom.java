@@ -8,6 +8,15 @@ import java.util.ArrayList;
 public class ServerChatroom {
 	private ArrayList<User> listOfUsers= new ArrayList<>();
 	private String name;
+        private ArrayList<Message> chatLog= new ArrayList<>();
+
+    public ArrayList<User> getListOfUsers() {
+        return listOfUsers;
+    }
+
+    public ArrayList<Message> getChatLog() {
+        return chatLog;
+    }
 	
 	public void writeToServerChatroom(Message msg){
 		
@@ -17,6 +26,7 @@ public class ServerChatroom {
 			} catch (IOException e) {
 				e.printStackTrace();			
 			}
+                        chatLog.add(msg);
 		}
 	}
 
