@@ -54,7 +54,7 @@ public class Server {
 
                             case "JOIN":
                                 mainJFrame.writeOutput(msg.getFromUser() + " joinet chatroom: " + findServerChatroom(msg.getChatroom()).getName());
-                                findServerChatroom(msg.getChatroom()).addUserToServerChatroom(oos);
+                                findServerChatroom(msg.getChatroom()).addUserToServerChatroom(msg.getFromUser());
 
                                 break;
 

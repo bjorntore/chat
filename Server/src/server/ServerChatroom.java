@@ -1,33 +1,33 @@
 package server;
 
 import ChatLogic.Message;
+import ChatLogic.User;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class ServerChatroom {
-	private ArrayList<ObjectOutputStream> listOfOutStreams= new ArrayList<>();
+	private ArrayList<User> listOfUsers= new ArrayList<>();
 	private String name;
 	
 	public void writeToServerChatroom(Message msg){
 		
-		for(int i=0;i<listOfOutStreams.size();i++){
+		for(int i=0;i<listOfUsers.size();i++){
 			try {
-				listOfOutStreams.get(i).writeObject(msg);
+				listOfUsers.get(i).getOos().writeObject(msg);
 			} catch (IOException e) {
-				listOfOutStreams.remove(i);			//klarer den ikke å sende til en enhet så blir den fjernet. Får fikse en DB senere
+				e.printStackTrace();			
 			}
 		}
 	}
 
-	public void addUserToServerChatroom(ObjectOutputStream out){ //daaa
-		listOfOutStreams.add(out);
-		System.out.println("antall pålogget:"+listOfOutStreams.size());
+	public void addUserToServerChatroom(User user){ //daaa
+		listOfUsers.add(user);
+		System.out.println("antall pålogget:"+listOfUsers.size());
 	}
-	public void removeUserFromServerChatroom(ObjectOutputStream out){//same
-		for(int i=0;i<listOfOutStreams.size();i++){
-			if(listOfOutStreams.get(i)==out){
-				listOfOutStreams.remove(i);
+	public void removeUserFromServerChatroom(User user){//same
+		for(int i=0;i<listOfUsers.size();i++){
+			if(listOfUsers.get(i)==user){
+				listOfUsers.remove(i);
 			}
 		}
 	}
