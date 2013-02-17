@@ -1,17 +1,28 @@
 package ChatLogic;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
-/**
- *
- * @author BjørnTore
- */
-public class ChatRoom {
+
+public class ChatRoom implements PropertyChangeListener{
     private String name;
-    private ArrayList<String> chatLog= new ArrayList<>();
+    private ArrayList<Message> chatLog= new ArrayList<>();
+    private ArrayList<User> users= new ArrayList();
+    private PropertyChangeSupport chatroomPCS;
+    
+    public ChatRoom(String name, ServerConnection serverConnection){
+        this.name=name;
+        chatroomPCS = new PropertyChangeSupport(this);
+        serverConnection.addPropertyChangeListener(this);
+    }
     
     public void addMessage(Message msg){ 
-        chatLog.add(msg.getFromUser()+": "+msg.getMessage());
+        chatLog.add(msg);
+    }
+    public void addUser(User user){ 
+        users.add(user);
     }
     public String getName() {
         return name;
@@ -19,6 +30,14 @@ public class ChatRoom {
 
     public void setName(String name) {
         this.name = name;
+    }
+ 
+    public void propertyChange(PropertyChangeEvent pce) {
+        if(pce.getPropertyName().equals("SEND")&&((Message)pce.getNewValue()).getChatroom().equalsIgnoreCase(name)){
+            chatLog.add(((Message)pce.getNewValue()));
+        }
+        chatroomPCS.firePropertyChange(name, null, chatLog);
+        
     }
     }
      
