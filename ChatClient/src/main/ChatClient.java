@@ -37,6 +37,7 @@ public class ChatClient implements PropertyChangeListener {
         chatMainFrame.addPropertyChangeListener(this);
         chatMainFrame.setVisible(true);
 
+        chatMainFrame.writeOutput("Looking for server...", null);
         Message connectionMessage = new Message("CONNECT", user);
         serverConnection = new ServerConnection();
         serverConnection.addPropertyChangeListener(this);
@@ -57,8 +58,17 @@ public class ChatClient implements PropertyChangeListener {
         } catch (NullPointerException ex) {
             System.exit(0);
         }
+        String serverAdress = null;
+        try {
+            serverAdress = JOptionPane.showInputDialog("Server adress", "www.btgjerde.net");
+            while ((serverAdress.trim()).equals("")) {
+                serverAdress = JOptionPane.showInputDialog("Server adress is required", "www.btgjerde.net");
+            }
+        } catch (NullPointerException ex) {
+            System.exit(0);
+        }
 
-        chatClient = new ChatClient("localhost", 10823, nickname);
+        chatClient = new ChatClient(serverAdress, 10823, nickname);
         //  BT: 31.45.22.215
     }
 

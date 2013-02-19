@@ -17,6 +17,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.text.DefaultCaret;
 
 /**
  *
@@ -34,12 +35,12 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         chatMainFramePCS = new PropertyChangeSupport(this);
         initComponents();
         jPanel2.setLayout(new GridLayout(10, 1, 0, 2));
+        DefaultCaret caret = (DefaultCaret)jTextArea1.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
     public void refreshUserList(CopyOnWriteArrayList<User> refreshedListOfUsers) {
-        
         //Add UserPanel for new users
-        writeOutput("Mottatt: " + refreshedListOfUsers.size(), new User("LOL OMG"));
         boolean somethingChanged = false;
         for (User user : refreshedListOfUsers) {
             boolean wasFound = false;
@@ -74,6 +75,7 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
                         }
                     } catch(NullPointerException ex){
                         System.out.println("nullPointer i GUI refreshListOfUsers remove user");
+                        somethingChanged = true;
                     }
                 }
             }
@@ -181,7 +183,6 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 51, 51));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/chatroom_normal.png"))); // NOI18N
         jButton2.setToolTipText("Conversations");
         jButton2.setBorder(null);
         jButton2.setBorderPainted(false);
@@ -189,7 +190,6 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         jButton2.setFocusable(false);
         jButton2.setName("conversationsButton"); // NOI18N
         jButton2.setRequestFocusEnabled(false);
-        jButton2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/chatroom_rollover.png"))); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
