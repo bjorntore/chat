@@ -28,7 +28,7 @@ public class ChatClient implements PropertyChangeListener {
     private User user;
     private static ChatClient chatClient;
 
-    public ChatClient(String ip, int port, String username) throws ClassNotFoundException {
+    public ChatClient(String ip, int port, String username){
         this.ip = ip;
         this.port = port;
         this.user = new User(username);
@@ -60,9 +60,9 @@ public class ChatClient implements PropertyChangeListener {
         }
         String serverAdress = null;
         try {
-            serverAdress = JOptionPane.showInputDialog("Server adress", "www.btgjerde.net");
+            serverAdress = JOptionPane.showInputDialog("Server adress", "62.16.209.182");
             while ((serverAdress.trim()).equals("")) {
-                serverAdress = JOptionPane.showInputDialog("Server adress is required", "www.btgjerde.net");
+                serverAdress = JOptionPane.showInputDialog("Server adress is required", "62.16.209.182");
             }
         } catch (NullPointerException ex) {
             System.exit(0);
