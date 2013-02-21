@@ -12,7 +12,15 @@ public class Message implements Serializable {
     private String signal = "";
     private ArrayList<User> connectedUsers = new ArrayList<>();
     private ArrayList arrayList = new ArrayList();
-    
+    private User toUser;
+
+    public User getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(User toUser) {
+        this.toUser = toUser;
+    }
 
     public Message(String signal, String message, String chatroom, User fromUser, ArrayList arraylist) {
         this.signal = signal;
