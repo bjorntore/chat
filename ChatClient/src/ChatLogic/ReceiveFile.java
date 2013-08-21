@@ -61,7 +61,7 @@ public class ReceiveFile {
     }
 
     public static void main(String[] args) throws Exception {
-        Socket socket = new Socket("localhost", 10823);
+        Socket socket = new Socket("84.202.93.112", 10823);
         new ReceiveFile(socket, "D:/Mottak/" );
     }
 }
