@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/C:/Users/BjørnTore/Documents/GitHub/chat/Server/src/server/Server.java</file>
+        <file>file:/C:/Users/BjørnTore/Documents/GitHub/chat/Server/src/ChatLogic/Message.java</file>
+        <file>file:/C:/Users/BjørnTore/Documents/GitHub/chat/Server/src/server/TestClient.java</file>
+        <file>file:/C:/Users/BjørnTore/Documents/GitHub/chat/Server/src/server/ServerChatroom.java</file>
+        <file>file:/C:/Users/BjørnTore/Documents/GitHub/chat/Server/src/ChatLogic/User.java</file>
+        <file>file:/C:/Users/BjørnTore/Documents/GitHub/chat/Server/src/GUI/ServerMainJFrame.java</file>
+        <file>file:/C:/Users/BjørnTore/Documents/GitHub/chat/Server/src/server/ServerChatroomManager.java</file>
+        <file>file:/C:/Users/BjørnTore/Documents/GitHub/chat/Server/src/server/FileTransfer.java</file>
+    </open-files>
 </project-private>

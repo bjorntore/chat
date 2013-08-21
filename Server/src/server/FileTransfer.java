@@ -51,9 +51,9 @@ public class FileTransfer {
 
 
     }
-/*
+
     public static void main(String[] args) throws Exception {
-        ServerSocket SS = new ServerSocket(8000);
+        ServerSocket SS = new ServerSocket(10823);
         Socket socket;
         ArrayList<Socket> sockets= new ArrayList<>();
         while (true) {
@@ -63,5 +63,5 @@ public class FileTransfer {
             }
         }
         new FileTransfer(sockets.get(1), sockets.get(0));
-    }*/
+    }
 }
