@@ -84,8 +84,9 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
              if(userPanels.size() != refreshedListOfUsers.size()){
                  jPanel2.removeAll();
                  refreshUserList(refreshedListOfUsers);
-             }
+             }            
             jPanel2.validate();
+            jPanel2.repaint();
         }
     }
 
