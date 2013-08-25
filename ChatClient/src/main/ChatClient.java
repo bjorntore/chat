@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  *
@@ -37,19 +38,20 @@ public class ChatClient implements PropertyChangeListener {
         chatMainFrame.addPropertyChangeListener(this);
         chatMainFrame.setVisible(true);
 
-        chatMainFrame.writeOutput("Looking for server...", null);
+        chatMainFrame.writeOutput("Looking for server...", null, 0);
         Message connectionMessage = new Message("CONNECT", user);
         serverConnection = new ServerConnection();
         serverConnection.addPropertyChangeListener(this);
         serverConnection.connect(ip, port);
         serverConnection.sendMessage(connectionMessage);
-        // serverConnection.sendMessage(new Message("CREATE_PUBLIC_CHATROOM","TEST", user));
+        //serverConnection.sendMessage(new Message("CREATE_PUBLIC_CHATROOM","TEST", user));
         //serverConnection.sendMessage(new Message("JOIN", "TEST", user));
 
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
         String nickname = null;
+        //setLookAndFeel();
         try {
             nickname = JOptionPane.showInputDialog("Please enter a nickname");
             while ((nickname.trim()).equals("")) {
@@ -60,36 +62,39 @@ public class ChatClient implements PropertyChangeListener {
         }
         String serverAdress = null;
         try {
-            serverAdress = JOptionPane.showInputDialog("Server adress", "www.btgjerde.net");
+            serverAdress = JOptionPane.showInputDialog("Server adress", "84.202.93.112");
             while ((serverAdress.trim()).equals("")) {
-                serverAdress = JOptionPane.showInputDialog("Server adress is required", "www.btgjerde.net");
+                serverAdress = JOptionPane.showInputDialog("Server adress is required", "84.202.93.112");
             }
         } catch (NullPointerException ex) {
             System.exit(0);
         }
 
         chatClient = new ChatClient(serverAdress, 10823, nickname);
-        //  BT: 31.45.22.215
+
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent pce) {
         switch (pce.getPropertyName()) {
             //SERVER
-            case "CONNECTED_USERS":                
+            case "CONNECTED_USERS":
                 chatMainFrame.refreshUserList((CopyOnWriteArrayList<User>) pce.getNewValue());
                 break;
+            case "SERVER_CONNECTION_SUCCESS":
+                chatMainFrame.writeOutput(pce.getNewValue() + "", null, 0);
+                break;
             case "SERVER_CONNECTION_FAILED":
-                chatMainFrame.writeOutput(pce.getNewValue() + "", null);
+                chatMainFrame.writeOutput(pce.getNewValue() + "", null, 0);
                 break;
             case "SERVER_CONNECTION_LOST":
-                chatMainFrame.writeOutput(pce.getNewValue() + "", null);
+                chatMainFrame.writeOutput(pce.getNewValue() + "", null, 0);
                 serverConnection.destroySocket();
                 serverConnection.connect(ip, port);
                 break;
 
             case "SERVER_MESSAGE":
-                chatMainFrame.writeOutput((((Message) pce.getNewValue()).getMessage()) + "", ((Message) pce.getNewValue()).getFromUser());
+                chatMainFrame.writeOutput((((Message) pce.getNewValue()).getMessage()) + "", ((Message) pce.getNewValue()).getFromUser(), 0);
                 break;
 
             case "ALIVE_CHECK":
@@ -100,6 +105,15 @@ public class ChatClient implements PropertyChangeListener {
             case "SEND_TO_SERVER":
                 serverConnection.sendMessage("SEND_TO_SERVER", pce.getNewValue() + "", pce.getOldValue() + "", user);
                 break;
+        }
+    }
+
+    private static void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

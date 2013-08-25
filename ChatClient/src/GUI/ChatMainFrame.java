@@ -14,10 +14,18 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 /**
  *
@@ -27,6 +35,7 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
 
     private PropertyChangeSupport chatMainFramePCS;
     private CopyOnWriteArrayList<UserPanel> userPanels = new CopyOnWriteArrayList<>();
+    private boolean firstWrite = true;
 
     /**
      * Creates new form ChatMainFrame
@@ -35,7 +44,10 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         chatMainFramePCS = new PropertyChangeSupport(this);
         initComponents();
         jPanel2.setLayout(new GridLayout(10, 1, 0, 2));
-        DefaultCaret caret = (DefaultCaret)jTextArea1.getCaret();
+        DefaultCaret caret = (DefaultCaret) jTextPane1.getCaret();
+        jTextPane1.setContentType("text/html");
+        jTextPane1.setEditorKit(kit);
+        jTextPane1.setDocument(doc);
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
@@ -73,7 +85,7 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
                             userPanel = null;
                             somethingChanged = true;
                         }
-                    } catch(NullPointerException ex){
+                    } catch (NullPointerException ex) {
                         System.out.println("nullPointer i GUI refreshListOfUsers remove user");
                         somethingChanged = true;
                     }
@@ -81,10 +93,10 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
             }
         }
         if (somethingChanged) {
-             if(userPanels.size() != refreshedListOfUsers.size()){
-                 jPanel2.removeAll();
-                 refreshUserList(refreshedListOfUsers);
-             }            
+            if (userPanels.size() != refreshedListOfUsers.size()) {
+                jPanel2.removeAll();
+                refreshUserList(refreshedListOfUsers);
+            }
             jPanel2.validate();
             jPanel2.repaint();
         }
@@ -100,10 +112,9 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        //IAppWidgetFactory.makeIAppScrollPane(jScrollPane1);
-        jScrollPane1.getVerticalScrollBar().setUnitIncrement(13);
-        jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jScrollPane3.getVerticalScrollBar().setUnitIncrement(13);
+        jTextPane1 = new javax.swing.JTextPane();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -121,17 +132,11 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         jPanel1.setBackground(new java.awt.Color(244, 244, 244));
         jPanel1.setMinimumSize(new java.awt.Dimension(390, 160));
 
-        jScrollPane1.setBorder(null);
+        jScrollPane3.setBorder(null);
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setWrapStyleWord(true);
-        jTextArea1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(233, 231, 231)));
-        jTextArea1.setFocusable(false);
-        jScrollPane1.setViewportView(jTextArea1);
+        jTextPane1.setEditable(false);
+        jTextPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 230, 230)));
+        jScrollPane3.setViewportView(jTextPane1);
 
         jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(233, 231, 231)));
@@ -219,13 +224,13 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 878, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -238,11 +243,10 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addGap(11, 11, 11))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)))
+                        .addGap(0, 71, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -263,19 +267,31 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void writeOutput(String output, User user) {
+    public void writeOutput(String output, User user, int outputType) {
+
+
         if (user == null) {
             user = new User("Client");
         }
 
-        if (!output.trim().equals("")) {
-            if (jTextArea1.getText().equals("")) {
-                jTextArea1.setText(getTimeStamp() + user.getName() + ":  " + output);
-            } else {
-                jTextArea1.setText(jTextArea1.getText() + "\n" + getTimeStamp() + user.getName() + ":  " + output);
+        try {
+            System.out.println(jTextPane1.getText());
+            if (!output.trim().equals("")) {
+                if (firstWrite) {
+                    //jTextPane1.setText(getTimeStamp() + user.getName() + ":</bold>  " + output);
+                    kit.insertHTML(doc, doc.getLength(), "<p color='#0000FF'> " + getTimeStamp() + user.getName() + ":  " + output, 1, 0, HTML.Tag.P);
+                    firstWrite = false;
+                } else {
+                    kit.insertHTML(doc, doc.getLength(), "<p> " + getTimeStamp() + user.getName() + ":  " + output, 1, 0, HTML.Tag.P);
+                }
             }
+        } catch (BadLocationException ex) {
+            Logger.getLogger(ChatMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ChatMainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
 
     private String getTimeStamp() {
         String hours;
@@ -322,11 +338,13 @@ public class ChatMainFrame extends javax.swing.JFrame implements PropertyChangeL
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
+    HTMLEditorKit kit = new HTMLEditorKit();
+    HTMLDocument doc = new HTMLDocument();
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {

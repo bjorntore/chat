@@ -34,17 +34,18 @@ public class ServerConnection implements PropertyChangeListener {
     private ArrayList<ChatRoom> chatrooms = new ArrayList<>();
     private ArrayList<Message> messages = new ArrayList<>();
     private Thread serverListener;
-    int attempts = 0;
-
+    int numberOfConnectionAttempts = 0;
+    int secondsBetweenConnectionAttempts = 5;
+    
     public ServerConnection() {
         serverConnectionPCS = new PropertyChangeSupport(this);
 
     }
 
-    public void connect(String ip, int port) {
+    public void connect(String ip, int port){
         while (socket == null) {
             try {
-                attempts++;
+                numberOfConnectionAttempts++;
                 socket = new Socket(ip, port);
                 os = socket.getOutputStream();
                 oos = new ObjectOutputStream(os);
@@ -52,13 +53,13 @@ public class ServerConnection implements PropertyChangeListener {
                 ois = new ObjectInputStream(is);
                 serverListener = new Thread(new ServerListener());
                 serverListener.start();
-                serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_FAILED", null, "Connected to server");
+                serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_SUCCESS", null, "Connected to server");
             } catch (Exception ex) {
-                ex.printStackTrace();
-                int seconds = 5;
-                serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_FAILED", null, "No server found, retrying in " + seconds + " seconds (" + attempts + ")");
+               //ex.printStackTrace();
+                
+                serverConnectionPCS.firePropertyChange("SERVER_CONNECTION_FAILED", null, "No server found, retrying in " + secondsBetweenConnectionAttempts + " seconds (" + numberOfConnectionAttempts + ")");
                 try {
-                    Thread.sleep(seconds * 1000);
+                    Thread.sleep(secondsBetweenConnectionAttempts * 1000);
                 } catch (InterruptedException ex1) {
                     ex.printStackTrace();
                 }
